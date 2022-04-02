@@ -1,7 +1,7 @@
 ---
 title: "Search Inside Yourself"
 date: 2022-04-01T19:47:04-05:00
-draft: true
+draft: false
 ---
 
 * * *
