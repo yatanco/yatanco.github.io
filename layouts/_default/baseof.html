@@ -1,75 +1,51 @@
+{{- partial "init.html" . -}}
+
 <!DOCTYPE html>
-<html class="no-js" lang="{{ with $.Site.LanguageCode }}{{ . }}{{ else }}en-us{{ end }}">
+<html lang="{{ .Site.LanguageCode }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>
+            {{- block "title" . }}{{ .Site.Title }}{{ end -}}
+        </title>
 
-<head>
-  <meta charset="utf-8">
-  {{/* https://www.zachleat.com/web/preload/ */}}
-  <link rel="preload" href="{{ "fonts/muli-latin-200.woff2" | absURL }}" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="{{ "fonts/muli-latin-400.woff2" | absURL }}" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="{{ "fonts/muli-latin-800.woff2" | absURL }}" as="font" type="font/woff2" crossorigin>
+        {{- partial "head/meta.html" . -}}
+        {{- partial "head/link.html" . -}}
+        {{- partial "head/seo.html" . -}}
+    </head>
+    <body header-desktop="{{ .Site.Params.header.desktopMode }}" header-mobile="{{ .Site.Params.header.mobileMode }}">
+        {{- /* Check theme isDark before body rendering */ -}}
+        {{- $theme := .Site.Params.defaulttheme -}}
+        <script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('{{ $theme }}' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : '{{ $theme }}' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  {{/* NOTE: the Site's title, and if there is a page title, that is set too */}}
-  <title>{{ block "title" . }}{{ with .Title }}{{ . }} | {{ end }}{{ .Site.Title }}{{ end }}</title>
+        <div id="mask"></div>
 
-  <meta name="viewport" content="width=device-width,minimum-scale=1">
-  {{ hugo.Generator }}
+        {{- /* Body wrapper */ -}}
+        <div class="wrapper">
+            {{- partial "header.html" . -}}
+            <main class="main">
+                <div class="container">
+                    {{- block "content" . }}{{ end -}}
+                </div>
+            </main>
+            {{- partial "footer.html" . -}}
+        </div>
 
-  {{ if eq (getenv "HUGO_ENV") "production" | or (eq .Site.Params.env "production")  }}
-  <meta name="robots" content="index, follow">
-  {{ else }}
-  <meta name="robots" content="noindex, nofollow">
-  {{ end }}
+        <div id="fixed-buttons">
+            {{- /* top button */ -}}
+            <a href="#" id="back-to-top" class="fixed-button" title="{{ T `backToTop` }}">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a>
 
-  {{ range .AlternativeOutputFormats -}}
-  <link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" href="{{ .Permalink | safeURL }}">
-  {{ end -}}
+            {{- /* comment button */ -}}
+            <a href="#" id="view-comments" class="fixed-button" title="{{ T `viewComments` }}">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div>
 
-  {{ $isDev := eq hugo.Environment "development" }}
-  {{ $stylesheet := resources.Get "output/css/app.css"  }}
-  {{ if not $isDev }}
-  {{ $stylesheet = $stylesheet | minify | fingerprint }}
-  {{ end }}
-  {{ with $stylesheet }}
-  {{ if $isDev }}
-  <link rel="stylesheet" href="{{ .RelPermalink }}" crossorigin="anonymous">
-  {{ else }}
-  <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous">
-  {{ end }}
-  {{ $.Scratch.Set "stylesheet" . }}
-  {{end}}
-
-  <meta name="description"
-  content="{{ with .Description }}{{ . }}{{ else }}{{ with .Site.Params.description }}{{ . }}{{ end }}{{ end }}">
-
-  {{ block "scripts" . }}
-  {{- partial "site-scripts.html" . -}}
-  {{ end }}
-  {{ partial "site-manifest.html" . }}
-  {{- partial "head-additions.html" . -}}
-  {{- partial "opengraph/opengraph.html" . -}}
-  {{- template "_internal/schema.html" . -}}
-  {{- partial "opengraph/twitter_cards.html" . -}}
-
-  {{ if eq (getenv "HUGO_ENV") "production" | or (eq .Site.Params.env "production")  }}
-  {{ partial "gtag" . }}
-  {{ end }}
-
-</head>
-
-<body class="ma0 sans-serif bg-primary-color-light{{ with getenv "HUGO_ENV" }} {{ . }}{{ end }}">
-  {{ partial "hooks/after-body-start" . }}
-  {{ block "nav" . }}{{ partial "site-nav.html" . }}{{ end }}
-  {{ block "header" . }}{{ end }}
-  <main role="main" class="content-with-sidebar min-vh-100 pb7 pb0-ns">
-    {{ block "main" . }}{{ end }}
-  </main>
-
-  {{ block "footer" . }}{{ partialCached "site-footer.html" . }}{{ end }}
-  
-  {{ partial "hooks/before-body-end" . }}
-  
-
-</body>
-
+        {{- /* Load JavaScript scripts and CSS */ -}}
+        {{- partial "assets.html" . -}}
+    </body>
 </html>

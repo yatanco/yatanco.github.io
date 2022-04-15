@@ -1,31 +1,24 @@
-{{ define "main" }}
-  <article class="w-100 ph4 pb5 pb6-ns pt1 pt5-ns">
-    <div class="flex-l">
+{{- define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end -}}
 
-      <div class="order-2 w-100 w-20-l ph5-m ph0-l mb4 sticky">
-      {{- partial "toc.html" . -}}
-      </div>
+{{- define "content" -}}
+    {{- $params := .Scratch.Get "params" -}}
+    <div class="page single special">
+        {{- /* Title */ -}}
+        <h1 class="single-title animated pulse faster">
+            {{- .Title -}}
+        </h1>
 
-      <div class="order-1 w-60-l mw7 ph0 ph5-ns mid-gray nested-copy-line-height no-underline nested-links nested-img nested-copy-seperator nested-blockquote mt0-ns" style="flex-grow:1;">
-        <div class="documentation-copy center measure-wide-l">
-          <div id="readout" class="fixed right-0 bottom-0">
-          </div>
-          {{ .Render "page" }}
-          {{ partial "related.html" . }}
+        {{- /* Subtitle */ -}}
+        {{- with $params.subtitle -}}
+            <h2 class="single-subtitle">{{ . }}</h2>
+        {{- end -}}
+
+        {{- /* Content */ -}}
+        <div class="content" id="content">
+            {{- dict "Content" .Content "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
         </div>
-      </div>
-      <div class="order-0 w-20 dn db-l">
-        {{ partial "nav-links-docs.html" . }}
-      </div>
 
+        {{- /* Comment */ -}}
+        {{- partial "comment.html" . -}}
     </div>
-  </article>
-
-  <div class="w-100 bg-light-gray">
-    <div class="mw7 pa4 center nested-lh-copy lh-copy">
-      {{ partial "docs/page-meta-data.html" . }}
-      {{ partial "page-edit.html" . }}
-      {{ partial "tags.html" . }}
-    </div>
-  </div>
-{{ end }}
+{{- end -}}

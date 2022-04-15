@@ -1,27 +1,41 @@
-{{ define "header" }}
-  {{ partial "hero" . }}
-  {{ partial "boxes-small-news" . }}
-{{ end }}
+{{- define "content" -}}
+    {{- $params := .Scratch.Get "params" -}}
+    {{- $profile := .Site.Params.home.profile -}}
+    {{- $posts := .Site.Params.home.posts -}}
 
-{{ define "main" }}
-  <section class="w-100 ph4 ph5-ns pv4">
-    {{- partial "home-page-sections/features-icons" . -}}
-  </section>
+    <div class="page home"{{ if ne $posts.enable false }} posts{{ end }}>
+        {{- /* Profile */ -}}
+        {{- if ne $profile.enable false -}}
+            {{- partial "home/profile.html" . -}}
+        {{- end -}}
 
-  {{ partial "home-page-sections/sponsors.html" (dict "cx" . "gtag" "home" ) }}
+        {{- /* Content */ -}}
+        {{- if .Content -}}
+            <div class="single">
+                <div class="content" id="content">
+                    {{- dict "Content" .Content "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
+                </div>
+            </div>
+        {{- end -}}
 
-  {{- partial "home-page-sections/features-single" . -}}
-
-  {{- partial "home-page-sections/showcase.html" . -}} 
-
-  <section class="w-100 ph4 ph5-ns pv4 pv6-ns mid-gray bg-white bb bt b--light-gray">
-    {{- partial "home-page-sections/installation" . -}}
-  </section>
-
-  <section class="w-100 ph4 ph5-ns pv4 pv6-ns mid-gray bg-accent-color-dark">
-    {{- partial "home-page-sections/tweets" . -}}
-  </section>
-  <section class="w-100 ph4 ph5-ns pt4 pb5 mid-gray bg-primary-color-light bb bt b--light-gray ">
-    {{- partial "home-page-sections/open-source-involvement" . -}}
-  </section>
-{{ end }}
+        {{- /* Posts */ -}}
+        {{- if ne $posts.enable false | and .Site.RegularPages -}}
+            {{- /* Paginate */ -}}
+            {{- $pages := where .Site.RegularPages "Type" "posts" -}}
+            {{- if .Site.Params.page.hiddenFromHomePage -}}
+                {{- $pages = where $pages "Params.hiddenfromhomepage" false -}}
+            {{- else -}}
+                {{- $pages = where $pages "Params.hiddenfromhomepage" "!=" true -}}
+            {{- end -}}
+            {{- with $posts.paginate | default .Site.Params.paginate -}}
+                {{- $pages = $.Paginate $pages . -}}
+            {{- else -}}
+                {{- $pages = .Paginate $pages -}}
+            {{- end -}}
+            {{- range $pages.Pages -}}
+                {{- .Render "summary" -}}
+            {{- end -}}
+            {{- partial "paginator.html" . -}}
+        {{- end -}}
+    </div>
+{{- end -}}

@@ -1,43 +1,51 @@
 {
-  "name": "gohugo-default-styles",
-  "version": "1.1.0",
-  "description": "Default Theme for Hugo Sites",
-  "main": "index.js",
-  "homepage": "https://gohugo.io/",
-  "bugs": {
-    "url": "https://github.com/gohugoio/gohugoioTheme/issues"
+  "name": "loveit-src",
+  "version": "0.2.0",
+  "description": "LoveIt theme source file",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "babel-preset-minify": "^0.5.1",
+    "babelify": "^10.0.0",
+    "browserify": "^16.5.0",
+    "core-js": "^3.6.4",
+    "husky": "^4.2.3",
+    "minimist": "^1.2.5",
+    "segmentit": "^2.0.3"
+  },
+  "scripts": {
+    "preinstall": "npx npm-force-resolutions",
+    "babel": "npx babel src/js --out-file assets/js/theme.min.js --source-maps",
+    "build": "npm run babel && hugo -v --source=exampleSite --themesDir ../.. --gc",
+    "build-lunr-segmentit": "browserify src/lib/lunr.segmentit.js -o assets/lib/lunr/lunr.segmentit.js -t babelify --presets @babel/preset-env --presets minify",
+    "start": "npm run babel && hugo server --source=exampleSite --themesDir ../.. -D --disableFastRender",
+    "start-production": "npm run babel && hugo server --source=exampleSite --themesDir ../.. -D --disableFastRender -e production",
+    "check": "htmlproofer exampleSite/public --check-html --allow-hash-href --empty-alt-ignore --disable-external",
+    "copy": "rm -rf resources && cp -rf exampleSite/resources resources"
+  },
+  "resolutions": {
+    "minimist": "^1.2.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run build && npm run copy && git add resources assets/js"
+    }
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gohugoio/gohugoioTheme.git"
+    "url": "git+https://github.com/dillonzq/LoveIt.git"
   },
-  "author": "budparr",
+  "keywords": [
+    "hugo",
+    "theme"
+  ],
+  "author": "Dillon",
   "license": "MIT",
-  "scripts": {
-    "build": "NODE_ENV=production webpack",
-    "build-dev": "NODE_ENV=development webpack --progress --watch",
-    "start": "npm run build-dev"
+  "bugs": {
+    "url": "https://github.com/dillonzq/LoveIt/issues"
   },
-  "devDependencies": {
-    "clean-webpack-plugin": "^1.0.0",
-    "clipboard": "^2.0.4",
-    "css-loader": "^4.3.0",
-    "docsearch.js": "^2.6.1",
-    "file-loader": "^2.0.0",
-    "glob-all": "^3.1.0",
-    "highlight.js": "^9.13.1",
-    "lazysizes": "^5.2.1",
-    "mini-css-extract-plugin": "^0.4.4",
-    "postcss": "^7.0.36",
-    "postcss-cssnext": "^3.1.0",
-    "postcss-import": "^12.0.1",
-    "postcss-loader": "^3.0.0",
-    "purgecss-webpack-plugin": "^1.3.1",
-    "scrolldir": "^1.4.0",
-    "tachyons": "^4.7.0",
-    "typeface-muli": "0.0.54",
-    "webpack": "^4.44.1",
-    "webpack-command": "^0.4.2"
-  },
-  "dependencies": {}
+  "homepage": "https://github.com/dillonzq/LoveIt#readme"
 }
