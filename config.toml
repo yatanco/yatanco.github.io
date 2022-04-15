@@ -1,4 +1,4 @@
-
-[module]
-    [module.hugoVersion]
-    min = "0.56.0"
+baseURL = 'http://yatanco.github.io'
+languageCode = 'en-us'
+title = 'Yatan BV - Speaker, Mindfulness Trainer, Startup Accelerator Expert'
+theme = "LoveIt"
