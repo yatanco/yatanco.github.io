@@ -1,10 +1,10 @@
 baseURL = 'http://yatanco.github.io'
-title = 'Yatan BV - Speaker, Mindfulness Trainer, Startup Accelerator Expert'
 # [en, zh-cn, fr, ...] determines default content language
 defaultContentLanguage = "en"
 # language code
 languageCode = "en"
-title = "My New Hugo Site"
+title = 'Yatan BV - Speaker, Mindfulness Trainer, Startup Accelerator Expert'
+
 
 # Change the default theme to be use when building the site with Hugo
 theme = "LoveIt"
