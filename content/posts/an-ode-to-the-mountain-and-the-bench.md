@@ -1,11 +1,9 @@
 ---
 title: "An Ode to the Mountain and the Bench"
 date: "2020-07-04"
-categories: 
-  - "life"
+
 ---
 
-The Mountain and the Bench
 
 ## It's quarantine time...
 

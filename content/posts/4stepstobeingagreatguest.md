@@ -11,8 +11,6 @@ Once upon a time a new friend stayed with me for a few weeks. I had met her not 
 
 Granted, she hadn't been the best guest from our point of view and I didn't really know how to address it so I decided to ask her whether shed be open for some feedback on how to be a better guest. Luckily she was open for it and this is what came of it.
 
-## 4 steps to be a great guest (with any kind of host)
-
 ### Step 1: Always bring a present.
 
 This can be something local from your country, a bottle of wine (or non alcoholic alternative), chocolate or even something thoughtful, the gesture is more important than the actual present. This will soften up your host and put him/her at a friendly predisposition.

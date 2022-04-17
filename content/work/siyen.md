@@ -4,23 +4,12 @@ date: 2022-04-01T19:47:04-05:00
 draft: false
 ---
 
-* * *
-
-## Search Inside Yourself
-
-* * *
-
 ### What is Search Inside Yourself
 
 #### Search Inside Yourself takes an evidence-based approach combining neuroscience, attention-training and emotional intelligence. The program provides practical tools that can be applied immediately in life or at work. We start with a foundation of mindfulness, and build the core emotional intelligence domains that lead to outstanding leadership:
 
 ![SIY Structure](/images/SIY-structure-1024x536.png)
 
-Sections of Search Inside Yourself
-
-
-
-* * *
 
 ### Benefits of Search Inside Yourself
 
@@ -44,7 +33,7 @@ Among many other things, **you will learn how to have difficu|t conversations, 
 
 ### Interested?
 
-#### Book a meeting on [calendly.com/yatan/15m](http://calendly.com/yatan/15m)
+Book a meeting on [calendly.com/yatan/15m](http://calendly.com/yatan/15m)
 
 Get in touch to find out more
 
