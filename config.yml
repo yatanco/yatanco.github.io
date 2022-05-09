@@ -111,13 +111,6 @@ menu:
       url: /meditation/
       title: ''
       weight: 1
-    - identifier: tags
-      pre: ''
-      post: ''
-      name: Tags
-      url: /tags/
-      title: ''
-      weight: 2
     - identifier: categories
       pre: ''
       post: ''
@@ -126,27 +119,6 @@ menu:
       title: ''
       weight: 3
       # that dropdown thang
-    - identifier: category
-      name: Category
-      url: /category/
-      weight: 1
-
-    - identifier: category1
-      name: Category1
-      url: /category1/
-      parent: category
-      weight: 1
-    - identifier: category2
-      name: Category2
-      url: /category2/
-      parent: category
-      weight: 2
-    - identifier: category3
-      name: Category3
-      url: /category3/
-      parent: category
-      weight: 3  
-  
     
 markup:
   highlight:
