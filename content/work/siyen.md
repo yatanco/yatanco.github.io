@@ -11,8 +11,6 @@ draft: false
 ![SIY Structure](/images/SIY-structure-1024x536.png)
 
 
-{{< youtube w7Ft2ymGmfc >}}
-
 ### Benefits of Search Inside Yourself
 
 Search Inside Yourself has been described as "life changing." It allows for deep transformations through accessible and practical content. The tools, practices, resources and exercises you'll learn in the Search Inside Yourself program will help to:
