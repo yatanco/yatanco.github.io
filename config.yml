@@ -6,9 +6,10 @@ theme: PaperMod
 
 params:
   homeInfoParams:
-    Title: Hi there wave
-    Content: Can be Info, links, about...
+    Title: Yatan Blumenthal's Online Mind
+    Content: My Work, Ideas and Musings
   version: 0.2.X
+  
   home:
     rss: 10
     profile:
