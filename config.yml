@@ -5,6 +5,9 @@ title: Yatan Blumenthal Vargas
 theme: PaperMod
 
 params:
+  homeInfoParams:
+    Title: Hi there wave
+    Content: Can be Info, links, about...
   version: 0.2.X
   home:
     rss: 10
@@ -12,15 +15,17 @@ params:
       enable: true
       gravatarEmail: yatanblu@gmail.com
       avatarURL: /images/avatar.png
-      title: ''
+      title: 'Yatan Blumenthal'
       subtitle: 'My Work, Ideas and Musings'
       typeit: true
       social: true
       disclaimer: ''
+    
     posts:
       enable: true
       paginate: 6
-      defaultHiddenFromHomePage: false
+      defaultHiddenFromHomePage: true
+
   social:
     GitHub: yatanco
     Linkedin: yatanblumenthal
@@ -81,13 +86,14 @@ params:
     XMPP: ''
     Matrix: ''
     Bilibili: ''
+
 menu:
   main:
     - identifier: mywork
       pre: ''
       post: ''
-      name: Mindfulness Training
-      url: /work/siyen/
+      name: My Work
+      url: /work/
       title: ''
       weight: 1
     - identifier: posts
@@ -111,6 +117,29 @@ menu:
       url: /categories/
       title: ''
       weight: 3
+      # that dropdown thang
+    - identifier: category
+      name: Category
+      url: /category/
+      weight: 1
+
+    - identifier: category1
+      name: Category1
+      url: /category1/
+      parent: category
+      weight: 1
+    - identifier: category2
+      name: Category2
+      url: /category2/
+      parent: category
+      weight: 2
+    - identifier: category3
+      name: Category3
+      url: /category3/
+      parent: category
+      weight: 3  
+  
+    
 markup:
   highlight:
     noClasses: false

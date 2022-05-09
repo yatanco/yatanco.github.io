@@ -4,15 +4,7 @@ date: 2022-04-01T22:45:26-05:00
 draft: false
 ---
 
-
-
-
-
-# Yatan Blumenthal-Vargas CV ES
-
 me@yatan.co ● +4915739625098 ● [www.yatan.co](http://www.yatan.co) 
-
----
 
 ---
 
@@ -22,13 +14,13 @@ Yatan Blumenthal Vargas es un profesional con experiencia en management, manejo 
 
 ## Educación
 
-Profesional
+### Profesional
 
 **05/2018-05/2019 |** **Search Inside Yourself Certified Teacher**; Entrenador en mindfulness z Inteligencia Emocional con enfoque en liderazgo y excelencia de trabajo de equipos.
 **
 **04/2018-07/2018 |** **Full Stack Web Developer**; *9-week intensive coding bootcamp learning HTML, CSS, Bootstrap, JavaScript ES2015, SQL, git, GitHub, Heroku and Ruby on Rails.*
 
-Universitaria
+### Universitaria
 
 **2010-2012 | MSc, International Business: Entrepreneurship & SME Management;** 
 Maastricht University (Netherlands)
