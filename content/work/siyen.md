@@ -10,6 +10,9 @@ draft: false
 
 ![SIY Structure](/images/SIY-structure-1024x536.png)
 
+{{< youtube r8fcqrNO7so >}}
+
+
 
 ### Benefits of Search Inside Yourself
 
