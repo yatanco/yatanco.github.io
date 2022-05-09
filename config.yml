@@ -99,9 +99,8 @@ menu:
     - identifier: posts
       pre: ''
       post: ''
-      name: Posts
+      name: Blog
       url: /posts/
-      parent: mywork
       title: ''
       weight: 1
     - identifier: meditation
