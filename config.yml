@@ -101,6 +101,14 @@ menu:
       post: ''
       name: Posts
       url: /posts/
+      parent: mywork
+      title: ''
+      weight: 1
+    - identifier: meditation
+      pre: ''
+      post: ''
+      name: Meditations
+      url: /meditation/
       title: ''
       weight: 1
     - identifier: tags
