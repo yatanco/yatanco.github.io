@@ -3,8 +3,10 @@ title: "Meditación en la impermanencia"
 date: 2022-04-01T22:45:26-05:00
 draft: false
 ---
-
 V. Sangye Khadro
+
+Escucha esta meditacion aca
+{{< audio src="/audio/meditacionenlaimpermanencia.mp3" class="something" >}}
 
 Buda afirmó que todas las cosas producidas son impermanentes, es decir, que cambian
 momento a momento. La expresión cosas producidas no se refiere sólo a las cosas

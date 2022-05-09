@@ -2,9 +2,14 @@
 title: "Meditación en la inevitabilidad de la muerte"
 date: 2022-04-01T22:45:26-05:00
 draft: false
+ShowToc: true
+TocOpen: true
 ---
-
 V. Sangye Khadro
+
+Escucha esta meditacion aca
+{{< audio src="/audio/meditacionenlainevabilidad.mp3" class="something" >}}
+
 
 Esta es una meditación en la llamada primera raíz, punto principal de la meditación sobre la muerte en nueve puntos. A saber: la muerte es inevitable e ineludible. Los otros
 dos puntos raíz (que se trataran en otras meditaciones) son: el momento de la muerte es desconocido, y sólo la práctica espiritual es de ayuda en dicho momento.
