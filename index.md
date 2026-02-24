@@ -1,3 +1,8 @@
+---
+layout: default
+title: Guacamaya Lab
+---
+
 # Guacamaya Lab
 
 An online notebook where I write about things I’m curious about:
