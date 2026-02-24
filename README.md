@@ -1,17 +1,7 @@
-# Guacamaya Lab
+# Guacamaya Lab README
 
-An online notebook where I write about things I’m curious about:
-family, care, thinking, learning, and building a meaningful life.
+This is my personal page
 
-This is a lab — unfinished, evolving, and honest.
+Want to actually see the page?
 
----
-
-## Notes
-
-- [Family as a Team](posts/2026-02-26-family-as-team.md)
-- [First Note](posts/2026-02-24-first-note.md)
-
----
-
-[About me](about.md)
+Go to http://yatanco.github.io 
