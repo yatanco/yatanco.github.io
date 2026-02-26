@@ -2,6 +2,8 @@
 layout: default
 title: "How I spent 2 years on not writing a blog"
 date: 2026-02-26
+lang: en
+
 ---
 > The neverending loop of procrastination of what matters
 
@@ -54,6 +56,10 @@ CMS / Hosting
 My process honestly is just starting, this is the first post I am writing, I have a a timer I am seing the countdown on next to me and have a had a long conversation with chatgpt on this.
 The best advice: keep the tech mega simple, in my case github pages with very basic jekyll so I dont have to do anything except write and write the title and date on top, if im feeling generous a little summary.
 I put the timer on and start writing. Once the timer is done or i feel like stopping, I stop and push it to github.
+
+![](HowIspent2yearsonnotwritingablog.png)
+
+
 
 Thats it folks. 
 
