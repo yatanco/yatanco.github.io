@@ -4,19 +4,18 @@ title: Guacamaya Lab
 ---
 
 # Guacamaya Lab
+An online notebook — unfinished, evolving, honest.
 
-An online notebook where I write about things I’m curious about:
-family, care, thinking, learning, and building a meaningful life.
-
-This is a lab — unfinished, evolving, and honest.
-
----
+[About me](about.md)
 
 ## Notes
 
-- [Family as a Team](posts/2026-02-26-family-as-team.md)
-- [First Note](posts/2026-02-24-first-note.md)
+<ul>
+  {% for post in site.posts %}
+    <li>
+      <a href="{{ post.url }}">{{ post.title }}</a>
+    </li>
+  {% endfor %}
+</ul>
 
----
 
-[About me](about.md)
