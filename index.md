@@ -3,10 +3,8 @@ layout: default
 title: Guacamaya Lab
 ---
 
-# Guacamaya Lab
-An online notebook — unfinished, evolving, honest.
-
-[About me](about.md)
+- [About me](about.md)
+- [Why I go for a meal with someone](/why-i-go-for-a-meal-with-someone/)
 
 ## Notes
 
