@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: post
 title: "How I spent 2 years on not writing a blog"
 date: 2026-02-26
 lang: en
