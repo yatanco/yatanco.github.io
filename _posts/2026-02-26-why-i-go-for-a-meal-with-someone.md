@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Why I Go for a Meal with Someone"
+date: 2026-02-26
+---
 > I originally wrote this as a small guide for my 16-year-old — a way to make some unspoken social rules more visible.
 > Then I realized these reminders are just as useful for adults, including myself.
 > So I’m sharing it here.
@@ -12,7 +17,6 @@ One of those small but meaningful social rituals is *going out for a meal*.
 
 It sounds simple, but there’s a lot going on beneath the surface.
 
----
 
 ### Why Go Out at All?
 
@@ -26,7 +30,6 @@ And that’s the point:
 
 **A meal isn’t really about the food — it’s about presence and conversation.**
 
----
 
 ### How to Be Someone People Love to Share a Meal With
 
@@ -51,7 +54,6 @@ Over time, I’ve built a small list — not rules, exactly, but gentle reminder
 
 Small gestures add up. Together, they create ease, trust, and connection.
 
----
 
 ### The Point of the Meal
 
