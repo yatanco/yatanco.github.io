@@ -2,6 +2,8 @@
 layout: default
 title: "Why I Go for a Meal with Someone"
 date: 2026-02-26
+lang: en
+
 ---
 > I originally wrote this as a small guide for my 16-year-old — a way to make some unspoken social rules more visible.
 > Then I realized these reminders are just as useful for adults, including myself.
