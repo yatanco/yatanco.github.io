@@ -1,6 +1,7 @@
 title: "Guacamaya Lab"
-description: "An online notebook — unfinished, evolving, honest."
+description: "Guacamaya Lab - An online notebook — unfinished, evolving, honest."
 theme: jekyll-theme-cayman
+future: true
 
 # Optional: if you use a custom domain later
 # url: "https://guacamayalab.com"
