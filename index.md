@@ -3,8 +3,6 @@ layout: default
 title: Guacamaya Lab
 ---
 
-- [About me](about.md)
-
 
 ## Notes
 
