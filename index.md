@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Guacamaya Lab
+title: Guacamaya Lab | Home
 ---
 
 
