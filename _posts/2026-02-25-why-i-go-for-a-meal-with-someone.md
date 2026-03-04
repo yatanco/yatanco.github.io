@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: post
 title: "Why I Go for a Meal with Someone"
 date: 2026-02-26
 lang: en

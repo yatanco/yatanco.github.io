@@ -1,17 +1,12 @@
 ---
-layout: default
-title: Guacamaya Lab | Home
+layout: home
+title: Guacamaya Lab
 ---
 
+An online notebook — unfinished, evolving, honest.
 
-## Notes
+## Posts
 
-<ul>
-  {% for post in site.posts %}
-    <li>
-      <a href="{{ post.url }}">{{ post.title }}</a>
-    </li>
-  {% endfor %}
-</ul>
-
-
+{% for post in site.posts %}
+- [{{ post.title }}]({{ post.url }}) — {{ post.date | date: "%Y-%m-%d" }}
+{% endfor %}

@@ -1,7 +1,10 @@
-title: "Guacamaya Lab"
-description: "Guacamaya Lab - An online notebook — unfinished, evolving, honest."
-theme: jekyll-theme-cayman
-future: true
+title: Guacamaya Lab
+description: An online notebook — unfinished, evolving, honest.
+theme: jekyll-theme-minimal
 
-# Optional: if you use a custom domain later
-# url: "https://guacamayalab.com"
+permalink: /:year/:month/:day/:title/
+
+markdown: kramdown
+
+plugins:
+  - jekyll-feed
