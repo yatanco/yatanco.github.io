@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "A Simple Self-Compassion Practice That Changed My Inner Dialogue"
-date: 2025-10-18
+date: 2026-03-10
 lang: en
 ---
 
