@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "4 Steps to Being a Great Guest (with Any Kind of Host)"
+title: "A Simple Guide to Being a Great Guest (with Any Kind of Host)"
 date: 2022-04-01
 lang: en
 ---
