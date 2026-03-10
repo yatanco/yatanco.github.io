@@ -9,8 +9,6 @@ lang: en
 > Then I realized these reminders are just as useful for adults, including myself.
 > So I’m sharing it here.
 
-## Why I Go for a Meal with Someone
-
 As an introvert, I’ve often had to learn social rules the explicit way — not by instinct, but by observation, reflection, and sometimes, a bit of trial and error.
 
 Now, as an educator, I think a lot about how to make these invisible social habits visible, especially for younger people who are still figuring them out.

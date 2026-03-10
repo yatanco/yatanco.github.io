@@ -5,11 +5,7 @@ date: 2020-10-18
 lang: en
 ---
 
-It's quarantine time.
-
-A perfect time to start blogging.
-
-After three months in an apartment on the tenth floor in a city of nine million people, you might think I would start losing it. Sometimes I do feel like that.
+It's quarantine time. After three months in an apartment on the tenth floor in a city of nine million people, you might think I would start losing it. Sometimes I do feel like that.
 
 Luckily I am with my mom and not alone. And luckily I am the kind of person who thrives on constraints and sometimes gets lost in too much freedom.
 

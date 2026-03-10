@@ -18,3 +18,7 @@ show_downloads: false
 
 github:
   is_project_page: false
+
+lang: en
+
+url: "https://guacamayalab.com"
