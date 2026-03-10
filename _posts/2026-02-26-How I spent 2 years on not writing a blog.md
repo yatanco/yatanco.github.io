@@ -7,8 +7,6 @@ lang: en
 ---
 > A post about all the things i did except writing
 
-# How I Spent 2 Years Not Writing a Blog
-
 Many people say they want to write a blog — to share ideas, build consistency, improve their writing. I am one of those people.
 
 And like many people, I spent *a long time doing everything except writing*.
