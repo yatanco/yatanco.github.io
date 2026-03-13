@@ -1,7 +1,9 @@
 ---
+
 layout: default
 title: Yatan Blumenthal Vargas
 description: Brain health, decentralized science, and thoughtful systems.
+
 ---
 
 # Yatan Blumenthal Vargas
