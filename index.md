@@ -1,9 +1,7 @@
 ---
-
 layout: default
 title: Yatan Blumenthal Vargas
 description: Brain health, decentralized science, and thoughtful systems.
-
 ---
 
 # Yatan Blumenthal Vargas
@@ -22,20 +20,20 @@ Over the years I’ve worked across operations, strategy, facilitation, and comm
 
 ---
 
-## What I'm doing now
+## What I’m doing now
 
-- Working on decentralized science and brain health  
-- Exploring ways to help cure or prevent neurodegenerative disease  
+- Working on decentralized science and brain health
+- Exploring ways to help cure or prevent neurodegenerative disease
 - Writing short notes and essays at [Guacamaya Lab](https://guacamayalab.com)
 
 ---
 
 ## Previous roles
 
-- Operations Lead at a BioDAO  
-- Facilitator for team-building, strategy, and organizational development  
-- Operator in technology and biotech-adjacent environments  
-- Builder of communities and experiments around science, learning, and collaboration  
+- Operations Lead at a BioDAO
+- Facilitator for team-building, strategy, and organizational development
+- Operator in technology and biotech-adjacent environments
+- Builder of communities and experiments around science, learning, and collaboration
 
 ---
 
@@ -50,8 +48,8 @@ An online notebook — unfinished, evolving, honest.
 ## Contact
 
 - [Guacamaya Lab](https://guacamayalab.com)
-- [GitHub](https://github.com/)
-- [LinkedIn](https://linkedin.com/)
+- [GitHub](https://github.com/yatanco)
+- [LinkedIn](https://linkedin.com)
 - [Email](mailto:you@example.com)
 
 ---
