@@ -1,11 +1,11 @@
- ---
+---
 layout: default
 title: Yatan Blumenthal Vargas
 ---
 
 # Yatan Blumenthal Vargas
 
-I work on brain health, decentralized science, and projects related to neurodegenerative disease.
+<p class="lead">I work on brain health, decentralized science, and projects related to neurodegenerative disease.</p>
 
 ## About
 
@@ -32,4 +32,4 @@ I write short notes and essays at [Guacamaya Lab](https://guacamayalab.com).
 
 - [LinkedIn](#)
 - [GitHub](#)
-- [Email](mailto:your@email.com)
+- [Email](mailto:you@example.com)
