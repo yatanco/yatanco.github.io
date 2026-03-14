@@ -7,7 +7,7 @@ lang: en
 
 About six years ago I started noticing that my mother was changing. She wasn’t just forgetting certain things — she had also become afraid of things that had never frightened her before. 
 After years of living by herself, she started getting afraid somebody was going to break in and wanted to be in company. 
-I started getting worried. Others brushed it off as a normal sign of aging.
+I started getting worried. Others brushed it off as a normal sign of aging, I didnt.
 
 As I often do when confronted with uncertainty, I started reading everything I could find.
 
@@ -64,6 +64,8 @@ In economic terms:
 
 - Global dementia cost ≈ $1.3 trillion per year  
 - Expected to exceed $2.8 trillion by 2030  
+
+(data gathered from pubmed via chatgpt)
 
 The societal burden is massive and growing fast.
 
