@@ -72,30 +72,15 @@ body, p, li {
 /* --- Dark mode: simplest possible version --- */
 @media (prefers-color-scheme: dark) {
   body {
-    background: #111;
-    color: #e8e8e8;
+    background-color: #111 !important;
+    color: #eaeaea !important;
+  }
+
+  section {
+    background: #111 !important;
   }
 
   a {
     color: #8ab4ff;
-  }
-
-  h1, h2, h3, h4, h5, h6,
-  strong, b {
-    color: #f5f5f5;
-  }
-
-  code, pre {
-    background: #1b1b1b;
-    color: #e8e8e8;
-  }
-
-  blockquote {
-    color: #cfcfcf;
-    border-left: 4px solid #444;
-  }
-
-  hr {
-    border-color: #333;
   }
 }
