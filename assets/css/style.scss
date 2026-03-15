@@ -4,68 +4,47 @@
 @import "{{ site.theme }}";
 
 /* One-column reading layout for jekyll-theme-minimal */
-header,
-section,
-footer {
+header, section, footer {
   float: none !important;
   width: auto !important;
   position: static !important;
 }
 
-/* Force dark theme */
 body {
   padding: 0 1rem;
-  background-color: #0f1115 !important;
-  color: #eaeaea !important;
 }
 
-/* Optimal reading width */
+/* Optimal reading width (roughly 60–75 chars/line) */
 .wrapper {
   max-width: 740px !important;
   width: 100% !important;
   margin: 2.5rem auto !important;
 }
 
-/* Remove split-page feel */
+/* Remove the visual “split page” feel */
 section {
   border: 0 !important;
   padding: 0 !important;
-  background: transparent !important;
 }
 
-/* Readability */
-body,
-p,
-li {
+/* Gentle readability bump */
+body, p, li {
   font-size: 18px;
   line-height: 1.65;
 }
 
-/* Headings */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-strong,
-b {
-  color: #ffffff !important;
-}
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #111 !important;
+    color: #eaeaea !important;
+  }
 
-/* Links */
-a {
-  color: #6cb6ff !important;
-}
+  section {
+    background: #111 !important;
+  }
 
-a:hover {
-  color: #9ecbff !important;
-}
-
-/* Optional: soften metadata / secondary text */
-small,
-time,
-.post-meta,
-.muted {
-  color: #b8b8b8 !important;
+  a {
+    color: #8ab4ff;
+  }
 }
