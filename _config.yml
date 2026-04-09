@@ -1,4 +1,14 @@
 title: "Yatan Blumenthal Vargas"
 description: "Brain health, decentralized science, and thoughtful systems."
 url: "https://yatan.co"
+
 markdown: kramdown
+
+plugins:
+  - jekyll-seo-tag
+
+show_downloads: false
+github:
+  is_project_page: false
+
+lang: en
