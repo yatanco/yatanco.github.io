@@ -7,6 +7,7 @@ description: Brain health, decentralized science, and thoughtful systems.
 # Yatan Blumenthal Vargas
 
 I've spent the past 15 years working at the intersection of science, startups, and human systems — building accelerators, coaching founders, and facilitating teams across Europe, Africa, and Latin America. My current focus is brain health and ending neurodegeneration.
+[🇨🇴 En español](/es/) 
 
 ---
 
