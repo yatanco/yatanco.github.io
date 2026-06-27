@@ -6,59 +6,62 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Intentions</title>
+<link rel="manifest" href="/tasks/manifest.json">
+<meta name="theme-color" content="#0f0f0f">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%230f0f0f'/><text y='340' x='256' text-anchor='middle' font-size='300'>⚓</text></svg>">
 <style>
   :root {
-    --bg: #0f0f0f;
-    --surface: #1a1a1a;
-    --surface2: #222222;
-    --border: #2e2e2e;
-    --border2: #3a3a3a;
-    --text: #e8e6e0;
-    --muted: #6b6966;
-    --accent: #4a9eff;
-    --accent-dim: #1a3a5c;
-    --frog: #3d8c5a;
-    --frog-dim: #1a3329;
-    --danger: #c0392b;
+    --bg: #0f0f0f; --surface: #1a1a1a; --surface2: #222222;
+    --border: #2e2e2e; --border2: #3a3a3a; --text: #e8e6e0;
+    --muted: #6b6966; --accent: #4a9eff; --accent-dim: #1a3a5c;
+    --frog: #3d8c5a; --frog-dim: #1a3329; --danger: #c0392b;
     --radius: 8px;
     --mono: 'SF Mono', 'Fira Mono', 'Cascadia Code', monospace;
     --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
   @media (prefers-color-scheme: light) {
     :root {
-      --bg: #f4f3ef;
-      --surface: #ffffff;
-      --surface2: #f0efeb;
-      --border: #dddbd5;
-      --border2: #c8c6c0;
-      --text: #1a1a18;
-      --muted: #8a8880;
-      --accent: #1a6fd4;
-      --accent-dim: #ddeeff;
-      --frog: #2d7a4a;
-      --frog-dim: #d4ede0;
+      --bg: #f4f3ef; --surface: #ffffff; --surface2: #f0efeb;
+      --border: #dddbd5; --border2: #c8c6c0; --text: #1a1a18;
+      --muted: #8a8880; --accent: #1a6fd4; --accent-dim: #ddeeff;
+      --frog: #2d7a4a; --frog-dim: #d4ede0;
     }
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html { background: var(--bg); }
-  body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; padding: 0; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; }
   .app { max-width: 560px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
-  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+
+  /* Header */
+  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
   .app-title { font-size: 15px; font-weight: 500; color: var(--muted); letter-spacing: 0.04em; font-family: var(--mono); }
   .header-right { display: flex; align-items: center; gap: 8px; }
+  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); transition: background 0.3s; flex-shrink: 0; }
+  .sync-dot.synced { background: var(--frog); }
+  .sync-dot.syncing { background: var(--accent); }
+  .sync-dot.error { background: var(--danger); }
   .export-btn {
     font-size: 12px; font-family: var(--mono); color: var(--accent);
     background: none; border: 1px solid var(--accent); border-radius: var(--radius);
     padding: 5px 11px; cursor: pointer; letter-spacing: 0.02em; transition: opacity 0.15s;
   }
   .export-btn:hover { opacity: 0.75; }
-  .sync-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--muted); transition: background 0.3s; flex-shrink: 0;
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+  .tab {
+    font-size: 12px; font-family: var(--mono); color: var(--muted); background: none;
+    border: none; padding: 7px 14px 8px; cursor: pointer; letter-spacing: 0.04em;
+    border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s;
   }
-  .sync-dot.synced { background: var(--frog); }
-  .sync-dot.syncing { background: var(--accent); }
-  .sync-dot.error { background: var(--danger); }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* Views */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* Add row */
   .add-row { display: flex; gap: 8px; margin-bottom: 1.5rem; }
   .add-input {
     flex: 1; height: 42px; background: var(--surface); border: 1px solid var(--border);
@@ -73,6 +76,8 @@
     font-family: var(--sans); cursor: pointer; transition: opacity 0.15s;
   }
   .add-btn:hover { opacity: 0.85; }
+
+  /* Task cards */
   .bucket { margin-bottom: 1.25rem; }
   .bucket-label {
     font-size: 10px; font-family: var(--mono); font-weight: 500; color: var(--muted);
@@ -89,8 +94,8 @@
   .task-main { display: flex; align-items: flex-start; gap: 10px; padding: 11px 13px; cursor: pointer; user-select: none; }
   .check {
     width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--border2);
-    flex-shrink: 0; margin-top: 2px; cursor: pointer; display: flex; align-items: center;
-    justify-content: center; transition: all 0.15s;
+    flex-shrink: 0; margin-top: 2px; cursor: pointer; display: flex;
+    align-items: center; justify-content: center; transition: all 0.15s;
   }
   .check:hover { border-color: var(--accent); }
   .check.checked { background: var(--accent); border-color: var(--accent); }
@@ -111,6 +116,8 @@
   .chip.frog-on { color: var(--frog); border-color: var(--frog); background: var(--frog-dim); }
   .expand-arrow { color: var(--muted); font-size: 12px; flex-shrink: 0; margin-top: 3px; transition: transform 0.15s; }
   .expanded .expand-arrow { transform: rotate(180deg); }
+
+  /* Intention panel */
   .intention-panel { padding: 0 13px 13px; border-top: 1px solid var(--border); display: none; }
   .expanded .intention-panel { display: block; }
   .int-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
@@ -126,7 +133,23 @@
   }
   .int-input:focus { border-color: var(--accent); }
   .int-input::placeholder { color: var(--muted); font-size: 12px; }
-  .task-actions { display: flex; justify-content: flex-end; margin-top: 12px; }
+
+  /* What happened textarea */
+  .happened-section { margin-top: 12px; }
+  .happened-label {
+    font-size: 10px; font-family: var(--mono); color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; display: block;
+  }
+  .happened-input {
+    width: 100%; font-size: 13px; font-family: var(--sans); color: var(--text);
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 10px; outline: none; resize: vertical; min-height: 72px;
+    transition: border-color 0.15s; line-height: 1.5;
+  }
+  .happened-input:focus { border-color: var(--accent); }
+  .happened-input::placeholder { color: var(--muted); font-size: 12px; }
+
+  .task-actions { display: flex; justify-content: flex-end; margin-top: 10px; }
   .del-btn { font-size: 11px; font-family: var(--mono); color: var(--danger); background: none; border: none; cursor: pointer; padding: 0; opacity: 0.7; }
   .del-btn:hover { opacity: 1; }
   .completed-toggle {
@@ -134,6 +157,35 @@
     cursor: pointer; display: flex; align-items: center; gap: 5px; padding: 8px 2px; letter-spacing: 0.04em;
   }
   .completed-toggle:hover { color: var(--text); }
+
+  /* Log view */
+  .log-summary {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 14px 16px; margin-bottom: 1.25rem;
+  }
+  .log-summary-title { font-size: 10px; font-family: var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
+  .log-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .log-bar-date { font-size: 11px; font-family: var(--mono); color: var(--muted); width: 68px; flex-shrink: 0; }
+  .log-bar-track { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .log-bar-fill { height: 100%; background: var(--frog); border-radius: 3px; transition: width 0.3s; }
+  .log-bar-count { font-size: 11px; font-family: var(--mono); color: var(--text); width: 20px; text-align: right; }
+  .log-empty { color: var(--muted); font-size: 13px; font-family: var(--mono); text-align: center; padding: 2rem 0; }
+
+  .log-task-list { margin-top: 1rem; }
+  .log-day-block { margin-bottom: 1rem; }
+  .log-day-header {
+    font-size: 10px; font-family: var(--mono); color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; padding-left: 2px;
+  }
+  .log-task-item {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 9px 12px; margin-bottom: 3px;
+  }
+  .log-task-title { font-size: 13px; color: var(--muted); text-decoration: line-through; }
+  .log-task-meta { font-size: 11px; font-family: var(--mono); color: var(--muted); margin-top: 3px; opacity: 0.6; }
+  .log-task-happened { font-size: 12px; color: var(--text); margin-top: 5px; font-style: italic; opacity: 0.8; line-height: 1.4; }
+
+  /* Toast */
   .toast {
     position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
     background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius);
@@ -142,6 +194,7 @@
   }
   .toast.show { opacity: 1; }
   .empty { text-align: center; color: var(--muted); font-size: 13px; font-family: var(--mono); padding: 2rem 0; }
+
   @media (max-width: 480px) {
     .app { padding: 1rem 0.75rem 4rem; }
     .add-input { font-size: 16px; }
@@ -157,14 +210,32 @@
       <button class="export-btn" onclick="exportMd()">copy as markdown</button>
     </div>
   </div>
-  <div class="add-row">
-    <input id="new-task" class="add-input" type="text" placeholder="Add a task…" autocomplete="off" onkeydown="if(event.key==='Enter')addTask()">
-    <button class="add-btn" onclick="addTask()">Add</button>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('tasks')">tasks</button>
+    <button class="tab" onclick="switchTab('log')">log</button>
   </div>
-  <div id="frog-bucket" class="bucket"></div>
-  <div id="today-bucket" class="bucket"></div>
-  <div id="later-bucket" class="bucket"></div>
-  <div id="completed-section"></div>
+
+  <!-- TASKS VIEW -->
+  <div class="view active" id="view-tasks">
+    <div class="add-row">
+      <input id="new-task" class="add-input" type="text" placeholder="Add a task…" autocomplete="off" onkeydown="if(event.key==='Enter')addTask()">
+      <button class="add-btn" onclick="addTask()">Add</button>
+    </div>
+    <div id="frog-bucket" class="bucket"></div>
+    <div id="today-bucket" class="bucket"></div>
+    <div id="later-bucket" class="bucket"></div>
+    <div id="completed-section"></div>
+  </div>
+
+  <!-- LOG VIEW -->
+  <div class="view" id="view-log">
+    <div class="log-summary">
+      <div class="log-summary-title">Last 14 days</div>
+      <div id="log-bars"></div>
+    </div>
+    <div class="log-task-list" id="log-task-list"></div>
+  </div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -177,20 +248,39 @@ const CACHE_KEY = 'intentions-cache';
 let tasks = [];
 let showDone = false;
 let saveTimer = null;
+let currentTab = 'tasks';
 
-function sbHeaders() {
+function sbHeaders(extra = {}) {
   return {
     'Content-Type': 'application/json',
     'apikey': SUPABASE_KEY,
     'Authorization': 'Bearer ' + SUPABASE_KEY,
-    'Prefer': 'return=minimal'
+    'Prefer': 'return=minimal',
+    ...extra
   };
 }
 
 function setSyncDot(state) {
-  const dot = document.getElementById('sync-dot');
-  dot.className = 'sync-dot ' + state;
+  document.getElementById('sync-dot').className = 'sync-dot ' + state;
 }
+
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('view-' + tab).classList.add('active');
+  if (tab === 'log') renderLog();
+}
+
+// ── Supabase ──────────────────────────────────────────
 
 async function loadFromSupabase() {
   setSyncDot('syncing');
@@ -199,20 +289,18 @@ async function loadFromSupabase() {
       `${SUPABASE_URL}/rest/v1/tasks?user_id=eq.${USER_ID}&select=id,data`,
       { headers: sbHeaders() }
     );
-    if (!res.ok) throw new Error('fetch failed');
+    if (!res.ok) throw new Error();
     const rows = await res.json();
     tasks = rows.map(r => r.data);
     localStorage.setItem(CACHE_KEY, JSON.stringify(tasks));
     setSyncDot('synced');
     render();
-  } catch (e) {
+  } catch {
     setSyncDot('error');
     const cached = localStorage.getItem(CACHE_KEY);
-    if (cached) {
-      try { tasks = JSON.parse(cached); } catch { tasks = []; }
-      showToast('Offline — showing cached tasks');
-      render();
-    }
+    if (cached) { try { tasks = JSON.parse(cached); } catch { tasks = []; } }
+    showToast('Offline — showing cached tasks');
+    render();
   }
 }
 
@@ -221,15 +309,13 @@ async function upsertTask(t) {
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/tasks`, {
       method: 'POST',
-      headers: { ...sbHeaders(), 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      headers: sbHeaders({ 'Prefer': 'resolution=merge-duplicates,return=minimal' }),
       body: JSON.stringify({ id: t.id, user_id: USER_ID, data: t, updated_at: new Date().toISOString() })
     });
-    if (!res.ok) throw new Error('upsert failed');
+    if (!res.ok) throw new Error();
     setSyncDot('synced');
     updateCache();
-  } catch {
-    setSyncDot('error');
-  }
+  } catch { setSyncDot('error'); }
 }
 
 async function deleteFromSupabase(id) {
@@ -239,49 +325,109 @@ async function deleteFromSupabase(id) {
       `${SUPABASE_URL}/rest/v1/tasks?id=eq.${id}&user_id=eq.${USER_ID}`,
       { method: 'DELETE', headers: sbHeaders() }
     );
-    if (!res.ok) throw new Error('delete failed');
+    if (!res.ok) throw new Error();
     setSyncDot('synced');
     updateCache();
-  } catch {
-    setSyncDot('error');
-  }
+  } catch { setSyncDot('error'); }
 }
 
-function updateCache() {
-  localStorage.setItem(CACHE_KEY, JSON.stringify(tasks));
+async function logCompletion(t) {
+  const date = new Date().toISOString().slice(0, 10);
+  try {
+    // fetch existing log for today
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/daily_log?date=eq.${date}&user_id=eq.${USER_ID}&select=count,tasks`,
+      { headers: sbHeaders() }
+    );
+    const rows = await res.json();
+    const existing = rows[0];
+    const prevTasks = existing ? existing.tasks : [];
+    const prevCount = existing ? existing.count : 0;
+    const logEntry = {
+      id: t.id, title: t.title,
+      completedAt: new Date().toISOString(),
+      happened: t.intention?.happened || ''
+    };
+    await fetch(`${SUPABASE_URL}/rest/v1/daily_log`, {
+      method: 'POST',
+      headers: sbHeaders({ 'Prefer': 'resolution=merge-duplicates,return=minimal' }),
+      body: JSON.stringify({
+        date, user_id: USER_ID,
+        count: prevCount + 1,
+        tasks: [...prevTasks, logEntry]
+      })
+    });
+  } catch { /* silent — log is best-effort */ }
 }
 
+async function unlogCompletion(taskId) {
+  const date = new Date().toISOString().slice(0, 10);
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/daily_log?date=eq.${date}&user_id=eq.${USER_ID}&select=count,tasks`,
+      { headers: sbHeaders() }
+    );
+    const rows = await res.json();
+    if (!rows[0]) return;
+    const newTasks = rows[0].tasks.filter(t => t.id !== taskId);
+    await fetch(`${SUPABASE_URL}/rest/v1/daily_log?date=eq.${date}&user_id=eq.${USER_ID}`, {
+      method: 'PATCH',
+      headers: sbHeaders({ 'Prefer': 'return=minimal' }),
+      body: JSON.stringify({ count: Math.max(0, rows[0].count - 1), tasks: newTasks })
+    });
+  } catch { /* silent */ }
+}
+
+async function fetchLog() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/daily_log?user_id=eq.${USER_ID}&order=date.desc&limit=14`,
+      { headers: sbHeaders() }
+    );
+    if (!res.ok) throw new Error();
+    return await res.json();
+  } catch { return []; }
+}
+
+// ── Local helpers ──────────────────────────────────────
+
+function updateCache() { localStorage.setItem(CACHE_KEY, JSON.stringify(tasks)); }
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
+function scheduleUpsert(t) { clearTimeout(saveTimer); saveTimer = setTimeout(() => upsertTask(t), 600); }
 
-function scheduleUpsert(t) {
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => upsertTask(t), 600);
-}
+// ── Task actions ───────────────────────────────────────
 
 function addTask() {
   const inp = document.getElementById('new-task');
   const title = inp.value.trim();
   if (!title) return;
   const t = {
-    id: uid(), title, due: 'today',
-    frog: false, done: false, expanded: false,
-    intention: { action: '', when: '', where: '', obstacle: '', backup: '' }
+    id: uid(), title, due: 'today', frog: false, done: false, expanded: false,
+    createdAt: new Date().toISOString(),
+    intention: { action: '', when: '', where: '', obstacle: '', backup: '', happened: '' }
   };
   tasks.unshift(t);
   inp.value = '';
-  updateCache();
-  render();
-  upsertTask(t);
+  updateCache(); render(); upsertTask(t);
 }
 
 function toggleDone(id, e) {
   e && e.stopPropagation();
   const t = tasks.find(t => t.id === id);
   if (!t) return;
-  t.done = !t.done;
+  const completing = !t.done;
+  t.done = completing;
   t.expanded = false;
+  if (completing) {
+    t.completedAt = new Date().toISOString();
+    logCompletion(t);
+  } else {
+    t.completedAt = null;
+    unlogCompletion(t.id);
+  }
   updateCache(); render(); upsertTask(t);
 }
+
 function toggleFrog(id, e) {
   e && e.stopPropagation();
   const t = tasks.find(t => t.id === id);
@@ -289,6 +435,7 @@ function toggleFrog(id, e) {
   t.frog = !t.frog;
   updateCache(); render(); upsertTask(t);
 }
+
 function toggleLater(id, e) {
   e && e.stopPropagation();
   const t = tasks.find(t => t.id === id);
@@ -296,25 +443,28 @@ function toggleLater(id, e) {
   t.due = t.due === 'later' ? 'today' : 'later';
   updateCache(); render(); upsertTask(t);
 }
+
 function toggleExpand(id) {
   const t = tasks.find(t => t.id === id);
   if (!t) return;
   t.expanded = !t.expanded;
   updateCache(); render();
 }
+
 function deleteTask(id, e) {
   e && e.stopPropagation();
   tasks = tasks.filter(t => t.id !== id);
-  updateCache(); render();
-  deleteFromSupabase(id);
+  updateCache(); render(); deleteFromSupabase(id);
 }
+
 function updateField(id, field, val) {
   const t = tasks.find(t => t.id === id);
   if (!t) return;
   t.intention[field] = val;
-  updateCache();
-  scheduleUpsert(t);
+  updateCache(); scheduleUpsert(t);
 }
+
+// ── Render tasks ───────────────────────────────────────
 
 function makeCard(t) {
   const int = t.intention || {};
@@ -327,14 +477,14 @@ function makeCard(t) {
   ];
 
   const card = document.createElement('div');
-  card.className = `task-card${t.done ? ' done' : ''}${t.expanded ? ' expanded' : ''}${t.frog && !t.done ? ' is-frog' : ''}`;
+  card.className = `task-card${t.done?' done':''}${t.expanded?' expanded':''}${t.frog&&!t.done?' is-frog':''}`;
   card.onclick = () => !t.done && toggleExpand(t.id);
 
   const main = document.createElement('div');
   main.className = 'task-main';
 
   const check = document.createElement('div');
-  check.className = `check${t.done ? ' checked' : ''}`;
+  check.className = `check${t.done?' checked':''}`;
   check.onclick = e => toggleDone(t.id, e);
   main.appendChild(check);
 
@@ -349,23 +499,20 @@ function makeCard(t) {
   if (!t.done) {
     const chips = document.createElement('div');
     chips.className = 'task-chips';
-
     const laterChip = document.createElement('button');
-    laterChip.className = `chip${t.due === 'later' ? ' later-on' : ''}`;
+    laterChip.className = `chip${t.due==='later'?' later-on':''}`;
     laterChip.textContent = t.due === 'later' ? 'later' : 'today';
     laterChip.onclick = e => toggleLater(t.id, e);
     chips.appendChild(laterChip);
-
     const frogChip = document.createElement('button');
-    frogChip.className = `chip${t.frog ? ' frog-on' : ''}`;
+    frogChip.className = `chip${t.frog?' frog-on':''}`;
     frogChip.textContent = t.frog ? '🐸 frog' : 'frog';
     frogChip.onclick = e => toggleFrog(t.id, e);
     chips.appendChild(frogChip);
-
     body.appendChild(chips);
   }
-  main.appendChild(body);
 
+  main.appendChild(body);
   if (!t.done) {
     const arrow = document.createElement('span');
     arrow.className = 'expand-arrow';
@@ -399,6 +546,22 @@ function makeCard(t) {
     });
     panel.appendChild(grid);
 
+    // What happened
+    const hapSec = document.createElement('div');
+    hapSec.className = 'happened-section';
+    const hapLbl = document.createElement('span');
+    hapLbl.className = 'happened-label';
+    hapLbl.textContent = 'What happened';
+    const hapTa = document.createElement('textarea');
+    hapTa.className = 'happened-input';
+    hapTa.placeholder = 'What actually happened when you tried this? What got in the way?';
+    hapTa.value = int.happened || '';
+    hapTa.onclick = e => e.stopPropagation();
+    hapTa.oninput = e => updateField(t.id, 'happened', e.target.value);
+    hapSec.appendChild(hapLbl);
+    hapSec.appendChild(hapTa);
+    panel.appendChild(hapSec);
+
     const actions = document.createElement('div');
     actions.className = 'task-actions';
     const del = document.createElement('button');
@@ -425,10 +588,7 @@ function render() {
   const laterEl = document.getElementById('later-bucket');
   const compEl  = document.getElementById('completed-section');
 
-  frogEl.innerHTML = '';
-  todayEl.innerHTML = '';
-  laterEl.innerHTML = '';
-  compEl.innerHTML = '';
+  frogEl.innerHTML = ''; todayEl.innerHTML = ''; laterEl.innerHTML = ''; compEl.innerHTML = '';
 
   if (frogs.length) {
     const lbl = document.createElement('div');
@@ -471,12 +631,117 @@ function render() {
   }
 }
 
-function showToast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 2500);
+// ── Render log ─────────────────────────────────────────
+
+async function renderLog() {
+  const barsEl = document.getElementById('log-bars');
+  const listEl = document.getElementById('log-task-list');
+  barsEl.innerHTML = '<div class="log-empty">Loading…</div>';
+  listEl.innerHTML = '';
+
+  const rows = await fetchLog();
+
+  if (!rows.length) {
+    barsEl.innerHTML = '<div class="log-empty">No completions yet — finish a task to start the log</div>';
+    return;
+  }
+
+  // Build last 14 days map
+  const map = {};
+  rows.forEach(r => { map[r.date] = r; });
+
+  const maxCount = Math.max(...rows.map(r => r.count), 1);
+  const days = [];
+  for (let i = 0; i < 14; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(d.toISOString().slice(0, 10));
+  }
+
+  barsEl.innerHTML = '';
+  days.forEach(date => {
+    const row = map[date];
+    const count = row ? row.count : 0;
+    const pct = Math.round((count / maxCount) * 100);
+    const label = formatDateLabel(date);
+
+    const barRow = document.createElement('div');
+    barRow.className = 'log-bar-row';
+
+    const dateEl = document.createElement('div');
+    dateEl.className = 'log-bar-date';
+    dateEl.textContent = label;
+
+    const track = document.createElement('div');
+    track.className = 'log-bar-track';
+    const fill = document.createElement('div');
+    fill.className = 'log-bar-fill';
+    fill.style.width = count ? pct + '%' : '0%';
+    if (count === 0) fill.style.background = 'var(--border)';
+    track.appendChild(fill);
+
+    const countEl = document.createElement('div');
+    countEl.className = 'log-bar-count';
+    countEl.textContent = count || '—';
+    if (count === 0) countEl.style.color = 'var(--muted)';
+
+    barRow.appendChild(dateEl);
+    barRow.appendChild(track);
+    barRow.appendChild(countEl);
+    barsEl.appendChild(barRow);
+  });
+
+  // Task list grouped by day
+  rows.forEach(r => {
+    if (!r.tasks || !r.tasks.length) return;
+    const block = document.createElement('div');
+    block.className = 'log-day-block';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'log-day-header';
+    hdr.textContent = formatDateLabel(r.date) + ' — ' + r.count + ' done';
+    block.appendChild(hdr);
+
+    r.tasks.forEach(t => {
+      const item = document.createElement('div');
+      item.className = 'log-task-item';
+
+      const title = document.createElement('div');
+      title.className = 'log-task-title';
+      title.textContent = t.title;
+      item.appendChild(title);
+
+      if (t.completedAt) {
+        const meta = document.createElement('div');
+        meta.className = 'log-task-meta';
+        meta.textContent = 'completed ' + new Date(t.completedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        item.appendChild(meta);
+      }
+
+      if (t.happened) {
+        const hap = document.createElement('div');
+        hap.className = 'log-task-happened';
+        hap.textContent = t.happened;
+        item.appendChild(hap);
+      }
+
+      block.appendChild(item);
+    });
+
+    listEl.appendChild(block);
+  });
 }
+
+function formatDateLabel(dateStr) {
+  const today = new Date().toISOString().slice(0, 10);
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  if (dateStr === today) return 'today';
+  if (dateStr === yesterday) return 'yesterday';
+  const d = new Date(dateStr + 'T12:00:00');
+  return d.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+}
+
+// ── Export ─────────────────────────────────────────────
 
 function exportMd() {
   const date  = new Date().toISOString().slice(0, 10);
@@ -485,24 +750,19 @@ function exportMd() {
   const today = open.filter(t => !t.frog && t.due === 'today');
   const later = open.filter(t => t.due === 'later');
 
-  let md = `# ⚓ Daily Focus — ${date}\n\n`;
-  md += `**Energy:**   **Constraint:**\n\n---\n\n`;
+  let md = `# ⚓ Daily Focus — ${date}\n\n**Energy:**   **Constraint:**\n\n---\n\n`;
 
   if (frogs.length) {
     const f = frogs[0];
     const int = f.intention || {};
-    md += `## 🐸 Frog\n\n`;
-    md += `**Task:** ${f.title}\n`;
-    md += `**Done when:** \n`;
-    md += `**First action:** ${int.action || ''}\n`;
+    md += `## 🐸 Frog\n\n**Task:** ${f.title}\n**Done when:** \n**First action:** ${int.action || ''}\n`;
     if (int.when)  md += `**When:** ${int.when}\n`;
     if (int.where) md += `**Where:** ${int.where}\n`;
     md += `\n*I only need 5 minutes. I'm allowed to do this badly.*\n\n---\n\n`;
   }
 
   md += `## Today's three\n\n`;
-  const allToday = [...frogs, ...today].slice(0, 3);
-  allToday.forEach((t, i) => {
+  [...frogs, ...today].slice(0, 3).forEach((t, i) => {
     const int = t.intention || {};
     md += `${i + 1}. ${t.title}`;
     if (int.when || int.where) md += ` _(${[int.when, int.where].filter(Boolean).join(', ')})_`;
@@ -522,6 +782,14 @@ function exportMd() {
 }
 
 loadFromSupabase();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/tasks/sw.js")
+      .catch(e => console.log("SW registration failed:", e));
+  });
+}
 </script>
 </body>
 </html>
