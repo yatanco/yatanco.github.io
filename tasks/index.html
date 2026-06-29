@@ -157,20 +157,36 @@
   .int-input:focus { border-color: var(--accent); }
   .int-input::placeholder { color: var(--muted); font-size: 12px; }
 
-  /* What happened textarea */
-  .happened-section { margin-top: 12px; }
-  .happened-label {
+  /* Notes feed */
+  .notes-section { margin-top: 14px; border-top: 1px solid var(--border); padding-top: 12px; }
+  .notes-label {
     font-size: 10px; font-family: var(--mono); color: var(--muted);
-    text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; display: block;
+    text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; display: block;
   }
-  .happened-input {
-    width: 100%; font-size: 13px; font-family: var(--sans); color: var(--text);
+  .notes-feed { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+  .note-entry {
+    background: var(--surface2); border-radius: 6px; padding: 8px 10px;
+  }
+  .note-ts {
+    font-size: 10px; font-family: var(--mono); color: var(--muted);
+    margin-bottom: 4px; letter-spacing: 0.04em;
+  }
+  .note-text { font-size: 13px; color: var(--text); line-height: 1.5; white-space: pre-wrap; }
+  .note-add-row { display: flex; gap: 6px; align-items: flex-end; }
+  .note-textarea {
+    flex: 1; font-size: 13px; font-family: var(--sans); color: var(--text);
     background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
-    padding: 8px 10px; outline: none; resize: vertical; min-height: 72px;
-    transition: border-color 0.15s; line-height: 1.5;
+    padding: 7px 10px; outline: none; resize: none; min-height: 56px; line-height: 1.5;
+    transition: border-color 0.15s;
   }
-  .happened-input:focus { border-color: var(--accent); }
-  .happened-input::placeholder { color: var(--muted); font-size: 12px; }
+  .note-textarea:focus { border-color: var(--accent); }
+  .note-textarea::placeholder { color: var(--muted); font-size: 12px; }
+  .note-submit {
+    height: 32px; padding: 0 12px; background: var(--accent); color: #fff;
+    border: none; border-radius: 6px; font-size: 12px; font-family: var(--mono);
+    cursor: pointer; white-space: nowrap; transition: opacity 0.15s; flex-shrink: 0;
+  }
+  .note-submit:hover { opacity: 0.85; }
 
   .task-actions { display: flex; justify-content: flex-end; margin-top: 10px; }
   .del-btn { font-size: 11px; font-family: var(--mono); color: var(--danger); background: none; border: none; cursor: pointer; padding: 0; opacity: 0.7; }
@@ -584,21 +600,48 @@ function makeCard(t) {
     });
     panel.appendChild(grid);
 
-    // What happened
-    const hapSec = document.createElement('div');
-    hapSec.className = 'happened-section';
-    const hapLbl = document.createElement('span');
-    hapLbl.className = 'happened-label';
-    hapLbl.textContent = 'What happened';
-    const hapTa = document.createElement('textarea');
-    hapTa.className = 'happened-input';
-    hapTa.placeholder = 'What actually happened when you tried this? What got in the way?';
-    hapTa.value = int.happened || '';
-    hapTa.onclick = e => e.stopPropagation();
-    hapTa.oninput = e => updateField(t.id, 'happened', e.target.value);
-    hapSec.appendChild(hapLbl);
-    hapSec.appendChild(hapTa);
-    panel.appendChild(hapSec);
+    // Notes feed
+    const notesSec = document.createElement('div');
+    notesSec.className = 'notes-section';
+    notesSec.onclick = e => e.stopPropagation();
+
+    const notesLbl = document.createElement('span');
+    notesLbl.className = 'notes-label';
+    notesLbl.textContent = 'Notes';
+    notesSec.appendChild(notesLbl);
+
+    const feed = document.createElement('div');
+    feed.className = 'notes-feed';
+    const notes = t.notes || [];
+    notes.forEach(n => {
+      const entry = document.createElement('div');
+      entry.className = 'note-entry';
+      const ts = document.createElement('div');
+      ts.className = 'note-ts';
+      ts.textContent = formatNoteDate(n.ts);
+      const txt = document.createElement('div');
+      txt.className = 'note-text';
+      txt.textContent = n.text;
+      entry.appendChild(ts);
+      entry.appendChild(txt);
+      feed.appendChild(entry);
+    });
+    notesSec.appendChild(feed);
+
+    const addRow = document.createElement('div');
+    addRow.className = 'note-add-row';
+    const ta = document.createElement('textarea');
+    ta.className = 'note-textarea';
+    ta.placeholder = 'What happened? What got in the way? What did you notice?';
+    ta.onkeydown = e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); submitNote(t.id, ta); } };
+    const btn = document.createElement('button');
+    btn.className = 'note-submit';
+    btn.textContent = 'add';
+    btn.onclick = () => submitNote(t.id, ta);
+    addRow.appendChild(ta);
+    addRow.appendChild(btn);
+    notesSec.appendChild(addRow);
+    panel.appendChild(notesSec);
 
     const actions = document.createElement('div');
     actions.className = 'task-actions';
@@ -612,6 +655,26 @@ function makeCard(t) {
   }
 
   return card;
+}
+
+function submitNote(id, ta) {
+  const text = ta.value.trim();
+  if (!text) return;
+  const t = tasks.find(t => t.id === id);
+  if (!t) return;
+  if (!t.notes) t.notes = [];
+  t.notes.push({ ts: new Date().toISOString(), text });
+  ta.value = '';
+  updateCache(); render(); upsertTask(t);
+}
+
+function formatNoteDate(ts) {
+  const d = new Date(ts);
+  const today = new Date();
+  const isToday = d.toDateString() === today.toDateString();
+  const time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  if (isToday) return 'today · ' + time;
+  return d.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }) + ' · ' + time;
 }
 
 function render() {
@@ -868,6 +931,14 @@ async function renderLog() {
         hap.className = 'log-task-happened';
         hap.textContent = t.happened;
         item.appendChild(hap);
+      }
+      if (t.notes && t.notes.length) {
+        t.notes.slice(-1).forEach(n => {
+          const hap = document.createElement('div');
+          hap.className = 'log-task-happened';
+          hap.textContent = n.text;
+          item.appendChild(hap);
+        });
       }
 
       block.appendChild(item);

@@ -114,6 +114,29 @@
   .chip:hover { border-color: var(--border2); color: var(--text); }
   .chip.later-on { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
   .chip.frog-on { color: var(--frog); border-color: var(--frog); background: var(--frog-dim); }
+  .chip.time-on { color: #b08cff; border-color: #b08cff; background: #1e1535; }
+  @media (prefers-color-scheme: light) {
+    .chip.time-on { color: #6b3fd4; border-color: #6b3fd4; background: #ede8ff; }
+  }
+
+  /* Timeblock view */
+  .tb-slot { margin-bottom: 1.25rem; }
+  .tb-slot-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+  }
+  .tb-slot-time {
+    font-size: 12px; font-family: var(--mono); color: #b08cff; width: 80px; flex-shrink: 0;
+  }
+  .tb-slot-line { flex: 1; height: 1px; background: var(--border); }
+  .tb-task-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); margin-bottom: 3px;
+  }
+  .tb-task-row.is-frog { border-color: var(--frog); }
+  .tb-task-title { font-size: 14px; color: var(--text); flex: 1; }
+  .tb-task-action { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-top: 2px; }
+  .tb-unplaced { color: var(--muted); font-size: 12px; font-family: var(--mono); padding: 1rem 0; text-align: center; }
   .expand-arrow { color: var(--muted); font-size: 12px; flex-shrink: 0; margin-top: 3px; transition: transform 0.15s; }
   .expanded .expand-arrow { transform: rotate(180deg); }
 
@@ -213,6 +236,7 @@
 
   <div class="tabs">
     <button class="tab active" onclick="switchTab('tasks')">tasks</button>
+    <button class="tab" onclick="switchTab('today')">today</button>
     <button class="tab" onclick="switchTab('log')">log</button>
   </div>
 
@@ -226,6 +250,11 @@
     <div id="today-bucket" class="bucket"></div>
     <div id="later-bucket" class="bucket"></div>
     <div id="completed-section"></div>
+  </div>
+
+  <!-- TODAY / TIMEBLOCK VIEW -->
+  <div class="view" id="view-today">
+    <div id="tb-content"></div>
   </div>
 
   <!-- LOG VIEW -->
@@ -278,6 +307,7 @@ function switchTab(tab) {
   event.target.classList.add('active');
   document.getElementById('view-' + tab).classList.add('active');
   if (tab === 'log') renderLog();
+  if (tab === 'today') renderToday();
 }
 
 // ── Supabase ──────────────────────────────────────────
@@ -509,6 +539,14 @@ function makeCard(t) {
     frogChip.textContent = t.frog ? '🐸 frog' : 'frog';
     frogChip.onclick = e => toggleFrog(t.id, e);
     chips.appendChild(frogChip);
+
+    // Time chip
+    const timeChip = document.createElement('button');
+    const hasTime = t.timeblock && t.timeblock !== 'unplaced';
+    timeChip.className = `chip${hasTime ? ' time-on' : ''}`;
+    timeChip.textContent = hasTime ? t.timeblock : 'no time';
+    timeChip.onclick = e => { e.stopPropagation(); cycleTimeblock(t.id); };
+    chips.appendChild(timeChip);
     body.appendChild(chips);
   }
 
@@ -631,7 +669,114 @@ function render() {
   }
 }
 
-// ── Render log ─────────────────────────────────────────
+function cycleTimeblock(id) {
+  const slots = ['unplaced', 'morning', 'afternoon', 'evening'];
+  const t = tasks.find(t => t.id === id);
+  if (!t) return;
+  const cur = t.timeblock || 'unplaced';
+  const idx = slots.indexOf(cur);
+  t.timeblock = slots[(idx + 1) % slots.length];
+  updateCache(); render(); upsertTask(t);
+  if (currentTab === 'today') renderToday();
+}
+
+function renderToday() {
+  const el = document.getElementById('tb-content');
+  el.innerHTML = '';
+
+  const open = tasks.filter(t => !t.done && t.due !== 'later');
+  const slots = ['morning', 'afternoon', 'evening'];
+  const slotLabels = { morning: 'Morning', afternoon: 'Afternoon', evening: 'Evening' };
+  const slotTimes  = { morning: '8:00 – 12:00', afternoon: '12:00 – 17:00', evening: '17:00 – 20:00' };
+
+  let hasAny = false;
+
+  slots.forEach(slot => {
+    const slotTasks = open.filter(t => t.timeblock === slot);
+    if (!slotTasks.length) return;
+    hasAny = true;
+
+    const block = document.createElement('div');
+    block.className = 'tb-slot';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'tb-slot-header';
+    const timeEl = document.createElement('div');
+    timeEl.className = 'tb-slot-time';
+    timeEl.textContent = slotLabels[slot] + ' · ' + slotTimes[slot];
+    const line = document.createElement('div');
+    line.className = 'tb-slot-line';
+    hdr.appendChild(timeEl);
+    hdr.appendChild(line);
+    block.appendChild(hdr);
+
+    slotTasks.forEach(t => {
+      const row = document.createElement('div');
+      row.className = `tb-task-row${t.frog ? ' is-frog' : ''}`;
+
+      const check = document.createElement('div');
+      check.className = `check${t.done ? ' checked' : ''}`;
+      check.onclick = e => { toggleDone(t.id, e); renderToday(); };
+      row.appendChild(check);
+
+      const body = document.createElement('div');
+      body.style.flex = '1';
+      const title = document.createElement('div');
+      title.className = 'tb-task-title';
+      title.textContent = (t.frog ? '🐸 ' : '') + t.title;
+      body.appendChild(title);
+      if (t.intention?.action) {
+        const action = document.createElement('div');
+        action.className = 'tb-task-action';
+        action.textContent = '→ ' + t.intention.action;
+        body.appendChild(action);
+      }
+      row.appendChild(body);
+      block.appendChild(row);
+    });
+
+    el.appendChild(block);
+  });
+
+  const unplaced = open.filter(t => !t.timeblock || t.timeblock === 'unplaced');
+  if (unplaced.length) {
+    hasAny = true;
+    const block = document.createElement('div');
+    block.className = 'tb-slot';
+    const hdr = document.createElement('div');
+    hdr.className = 'tb-slot-header';
+    const timeEl = document.createElement('div');
+    timeEl.className = 'tb-slot-time';
+    timeEl.style.color = 'var(--muted)';
+    timeEl.textContent = 'Unplaced';
+    const line = document.createElement('div');
+    line.className = 'tb-slot-line';
+    hdr.appendChild(timeEl);
+    hdr.appendChild(line);
+    block.appendChild(hdr);
+
+    unplaced.forEach(t => {
+      const row = document.createElement('div');
+      row.className = 'tb-task-row';
+      const title = document.createElement('div');
+      title.className = 'tb-task-title';
+      title.style.color = 'var(--muted)';
+      title.textContent = t.title;
+      row.appendChild(title);
+      block.appendChild(row);
+    });
+    el.appendChild(block);
+  }
+
+  if (!hasAny) {
+    const empty = document.createElement('div');
+    empty.className = 'tb-unplaced';
+    empty.textContent = 'No tasks for today yet';
+    el.appendChild(empty);
+  }
+}
+
+
 
 async function renderLog() {
   const barsEl = document.getElementById('log-bars');
@@ -762,11 +907,26 @@ function exportMd() {
   }
 
   md += `## Today's three\n\n`;
-  [...frogs, ...today].slice(0, 3).forEach((t, i) => {
-    const int = t.intention || {};
-    md += `${i + 1}. ${t.title}`;
-    if (int.when || int.where) md += ` _(${[int.when, int.where].filter(Boolean).join(', ')})_`;
-    md += '\n';
+  const slots = ['morning', 'afternoon', 'evening'];
+  const placed = [...frogs, ...today].filter(t => t.timeblock && t.timeblock !== 'unplaced');
+  const unplaced = [...frogs, ...today].filter(t => !t.timeblock || t.timeblock === 'unplaced');
+
+  if (placed.length) {
+    slots.forEach(slot => {
+      const slotTasks = placed.filter(t => t.timeblock === slot);
+      if (!slotTasks.length) return;
+      md += `**${slot.charAt(0).toUpperCase() + slot.slice(1)}**\n`;
+      slotTasks.forEach(t => {
+        const int = t.intention || {};
+        md += `- [ ] ${t.title}`;
+        if (int.action) md += ` _(→ ${int.action})_`;
+        md += '\n';
+      });
+      md += '\n';
+    });
+  }
+  unplaced.slice(0, placed.length ? 10 : 3).forEach((t, i) => {
+    if (!placed.length) md += `${i + 1}. ${t.title}\n`;
   });
 
   if (later.length) {
