@@ -1,3 +1,5 @@
+---
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -299,52 +301,30 @@ async function saveMorning() {
   setTimeout(() => switchTab('tasks', document.getElementById('tab-tasks')), 700);
 }
 
-async function redoMorning() {
+function redoMorning() {
   localStorage.removeItem(MORNING_KEY + '-' + todayKey());
-  try {
-    await fetch(SUPABASE_URL + '/rest/v1/morning_checkin?date=eq.' + todayKey() + '&user_id=eq.' + USER_ID, {
-      method: 'DELETE', headers: sbHeaders()
-    });
-  } catch {}
   renderMorning();
 }
 
-async function renderMorning() {
+function renderMorning() {
   const d = new Date();
   document.getElementById('morning-date').textContent = d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase();
+  const saved = localStorage.getItem(MORNING_KEY + '-' + todayKey());
   const banner = document.getElementById('morning-done-banner');
   const form   = document.getElementById('morning-form');
   const tab    = document.getElementById('tab-morning');
-
-  // Try Supabase first, fall back to localStorage
-  let entry = null;
-  try {
-    const res = await fetch(SUPABASE_URL + '/rest/v1/morning_checkin?date=eq.' + todayKey() + '&user_id=eq.' + USER_ID, { headers: sbHeaders() });
-    if (res.ok) {
-      const rows = await res.json();
-      if (rows && rows.length) {
-        entry = rows[0];
-        // Keep localStorage in sync
-        localStorage.setItem(MORNING_KEY + '-' + todayKey(), JSON.stringify(entry));
+  if (saved) {
+    try {
+      const e = JSON.parse(saved);
+      let txt = 'Morning check-in done.';
+      if (e.commit) txt += '  Today I will ' + e.commit;
+      document.getElementById('morning-done-text').textContent = txt;
+      banner.classList.add('visible');
+      form.style.display = 'none';
+      if (!tab.querySelector('.tab-done-dot')) {
+        const dot = document.createElement('span'); dot.className = 'tab-done-dot'; tab.appendChild(dot);
       }
-    }
-  } catch {}
-
-  // Fall back to localStorage if Supabase failed or offline
-  if (!entry) {
-    const cached = localStorage.getItem(MORNING_KEY + '-' + todayKey());
-    if (cached) { try { entry = JSON.parse(cached); } catch {} }
-  }
-
-  if (entry) {
-    let txt = 'Morning check-in done.';
-    if (entry.commit) txt += '  Today I will ' + entry.commit;
-    document.getElementById('morning-done-text').textContent = txt;
-    banner.classList.add('visible');
-    form.style.display = 'none';
-    if (!tab.querySelector('.tab-done-dot')) {
-      const dot = document.createElement('span'); dot.className = 'tab-done-dot'; tab.appendChild(dot);
-    }
+    } catch {}
   } else {
     banner.classList.remove('visible');
     form.style.display = 'flex';
