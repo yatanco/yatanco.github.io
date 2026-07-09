@@ -633,15 +633,14 @@ async function renderDay() {
     document.getElementById('morning-done-commit').textContent=mEntry.commit||'(no commitment set)';
     show('morning-done',true); show('morning-form',false); show('morning-begin-btn',false);
     if(!tab.querySelector('.tab-dot')){const dot=document.createElement('span');dot.className='tab-dot';tab.appendChild(dot);}
-    // Show shutdown section
-    show('shutdown-sep',true);
-    await renderShutdown();
   } else {
     show('morning-done',false); show('morning-form',true); show('morning-begin-btn',true);
-    show('shutdown-sep',false); show('shutdown-done',false); show('shutdown-form',false); show('shutdown-close-btn',false);
     const dot=tab.querySelector('.tab-dot'); if(dot) dot.remove();
     ['mq-reality','mq-one','mq-avoid','mq-commit'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   }
+  // Shutdown always visible, independent of morning
+  show('shutdown-sep',true);
+  await renderShutdown();
 }
 
 async function saveMorning() {
