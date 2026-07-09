@@ -387,12 +387,7 @@ let tasks = [], showDone = false, saveTimer = null, currentTab = 'day';
 function sbH(extra={}) {
   return { 'Content-Type':'application/json', 'apikey':SUPABASE_KEY, 'Authorization':'Bearer '+SUPABASE_KEY, 'Prefer':'return=minimal', ...extra };
 }
-function todayKey() {
-  const d = new Date();
-  return d.getFullYear() + '-' +
-    String(d.getMonth()+1).padStart(2,'0') + '-' +
-    String(d.getDate()).padStart(2,'0');
-}
+function todayKey() { return new Date().toISOString().slice(0,10); }
 function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,5); }
 function scheduleUpsert(t) { clearTimeout(saveTimer); saveTimer=setTimeout(()=>upsertTask(t),600); }
 function updateCache() { localStorage.setItem(CACHE_KEY,JSON.stringify(tasks)); }
