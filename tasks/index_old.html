@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Intentions</title>
+<link rel="manifest" href="/tasks/manifest.json">
+<meta name="theme-color" content="#111111">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%23111111'/><text y='340' x='256' text-anchor='middle' font-size='300'>⚓</text></svg>">
+<style>
+/* ── Design tokens ── */
+:root {
+  --bg:          #111111;
+  --surface:     #1c1c1c;
+  --surface2:    #242424;
+  --surface3:    #2c2c2c;
+  --border:      #303030;
+  --border2:     #404040;
+  --text:        #e2e0da;
+  --text2:       #a09d98;
+  --muted:       #5a5856;
+  --accent:      #4a9eff;
+  --accent-dim:  #162840;
+  --frog:        #3d9160;
+  --frog-dim:    #152a1e;
+  --danger:      #c0392b;
+  --amber:       #c4882a;
+  --amber-dim:   #2a1e08;
+  --blue:        #4a7fa5;
+  --blue-dim:    #0e1f2d;
+  --radius:      10px;
+  --radius-sm:   6px;
+  --mono: 'SF Mono','Fira Mono','Cascadia Code',monospace;
+  --sans: -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:         #f2f1ed;
+    --surface:    #ffffff;
+    --surface2:   #f7f6f2;
+    --surface3:   #eeede9;
+    --border:     #e0deda;
+    --border2:    #cbc9c4;
+    --text:       #1a1918;
+    --text2:      #6b6966;
+    --muted:      #a09d98;
+    --accent:     #1a6fd4;
+    --accent-dim: #ddeeff;
+    --frog:       #2d7a4a;
+    --frog-dim:   #d4ede0;
+    --amber:      #b07020;
+    --amber-dim:  #fff3de;
+    --blue:       #2d6a8a;
+    --blue-dim:   #ddeeff;
+  }
+}
+
+/* ── Reset ── */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+html { background:var(--bg); }
+body { font-family:var(--sans); background:var(--bg); color:var(--text); min-height:100vh; }
+
+/* ── Layout ── */
+.app { max-width:560px; margin:0 auto; padding:1.25rem 1rem 5rem; }
+
+/* ── Header ── */
+.header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; }
+.app-title { font-size:14px; font-weight:500; color:var(--muted); letter-spacing:0.05em; font-family:var(--mono); }
+.header-right { display:flex; align-items:center; gap:10px; }
+.sync-dot { width:6px; height:6px; border-radius:50%; background:var(--muted); transition:background 0.3s; flex-shrink:0; }
+.sync-dot.synced  { background:var(--frog); }
+.sync-dot.syncing { background:var(--accent); }
+.sync-dot.error   { background:var(--danger); }
+.hdr-btn { font-size:11px; font-family:var(--mono); color:var(--accent); background:none; border:1px solid color-mix(in srgb,var(--accent) 40%,transparent); border-radius:var(--radius-sm); padding:5px 10px; cursor:pointer; letter-spacing:0.03em; transition:all 0.15s; }
+.hdr-btn:hover { background:var(--accent-dim); }
+
+/* ── Tabs ── */
+.tabs { display:flex; margin-bottom:1.5rem; border-bottom:1px solid var(--border); gap:0; }
+.tab { font-size:11px; font-family:var(--mono); color:var(--muted); background:none; border:none; padding:8px 14px 9px; cursor:pointer; letter-spacing:0.05em; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all 0.15s; position:relative; white-space:nowrap; }
+.tab:hover { color:var(--text2); }
+.tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+.tab.day-tab.active { color:var(--amber); border-bottom-color:var(--amber); }
+.tab-dot { position:absolute; top:7px; right:5px; width:4px; height:4px; border-radius:50%; background:var(--frog); }
+
+/* ── Views ── */
+.view { display:none; }
+.view.active { display:block; }
+
+/* ── Section label ── */
+.section-label { font-size:10px; font-family:var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px; padding-left:2px; }
+
+/* ── Day view (morning + shutdown) ── */
+.day-date { font-size:11px; font-family:var(--mono); color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:1.25rem; }
+
+/* Morning card */
+.morning-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:1rem; transition:border-color 0.15s; }
+.morning-card:focus-within { border-color:var(--amber); }
+.morning-card-done { background:var(--amber-dim); border:1px solid color-mix(in srgb,var(--amber) 35%,transparent); border-radius:var(--radius); padding:14px 16px; margin-bottom:1rem; display:none; }
+.morning-card-done.visible { display:block; }
+.morning-card-done-label { font-size:10px; font-family:var(--mono); color:var(--amber); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px; }
+.morning-card-done-text { font-size:14px; color:var(--text); line-height:1.5; }
+.morning-card-done-commit { font-size:13px; font-family:var(--mono); color:var(--amber); margin-top:6px; }
+.redo-btn { font-size:10px; font-family:var(--mono); color:var(--muted); background:none; border:none; cursor:pointer; padding:0; margin-top:10px; text-decoration:underline; display:block; letter-spacing:0.03em; }
+.redo-btn:hover { color:var(--text2); }
+
+/* Shared form field */
+.day-field { border-bottom:1px solid var(--border); }
+.day-field:last-of-type { border-bottom:none; }
+.day-field-label { font-size:10px; font-family:var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; padding:11px 14px 0; display:block; }
+.day-field-hint  { font-size:11px; color:var(--muted); padding:2px 14px 0; opacity:0.6; line-height:1.4; display:block; }
+.day-field-ta    { width:100%; font-size:14px; font-family:var(--sans); color:var(--text); background:transparent; border:none; outline:none; resize:none; padding:7px 14px 12px; line-height:1.6; min-height:64px; }
+.day-field-ta::placeholder { color:var(--muted); font-size:13px; }
+.day-field-input { width:100%; font-size:14px; font-family:var(--sans); color:var(--text); background:transparent; border:none; outline:none; padding:7px 14px 12px; line-height:1.6; }
+.day-field-input::placeholder { color:var(--muted); font-size:13px; }
+.day-field-prefix { font-size:12px; font-family:var(--mono); color:var(--muted); padding:11px 14px 0; display:block; }
+.day-field-accent-label { color:var(--amber); }
+.day-begin-btn { width:100%; height:48px; background:var(--amber); color:#fff; border:none; border-radius:var(--radius); font-size:14px; font-family:var(--mono); letter-spacing:0.04em; cursor:pointer; transition:opacity 0.15s; margin-top:0.75rem; }
+.day-begin-btn:hover { opacity:0.85; }
+
+/* Shutdown separator */
+.shutdown-sep { display:flex; align-items:center; gap:12px; margin:2rem 0 1.25rem; }
+.shutdown-sep-line { flex:1; height:1px; background:var(--border); }
+.shutdown-sep-label { font-size:10px; font-family:var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; white-space:nowrap; }
+
+/* Shutdown card */
+.shutdown-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:1rem; transition:border-color 0.15s; }
+.shutdown-card:focus-within { border-color:var(--blue); }
+.shutdown-card-done { background:var(--blue-dim); border:1px solid color-mix(in srgb,var(--blue) 35%,transparent); border-radius:var(--radius); padding:14px 16px; margin-bottom:1rem; display:none; }
+.shutdown-card-done.visible { display:block; }
+.shutdown-card-done-label { font-size:10px; font-family:var(--mono); color:var(--blue); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px; }
+.shutdown-card-done-text { font-size:14px; color:var(--text); line-height:1.5; }
+.shutdown-card-done-seed { font-size:13px; font-family:var(--mono); color:var(--blue); margin-top:6px; }
+.day-field-blue-label { color:var(--blue); }
+.day-close-btn { width:100%; height:48px; background:var(--blue-dim); color:var(--blue); border:1px solid color-mix(in srgb,var(--blue) 40%,transparent); border-radius:var(--radius); font-size:14px; font-family:var(--mono); letter-spacing:0.04em; cursor:pointer; transition:opacity 0.15s; margin-top:0.75rem; }
+.day-close-btn:hover { opacity:0.75; }
+
+/* ── Task cards ── */
+.add-row { display:flex; gap:8px; margin-bottom:1.5rem; }
+.add-input { flex:1; height:44px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); color:var(--text); font-family:var(--sans); font-size:15px; padding:0 14px; outline:none; transition:border-color 0.15s; }
+.add-input:focus { border-color:var(--accent); }
+.add-input::placeholder { color:var(--muted); }
+.add-btn { height:44px; padding:0 18px; background:var(--accent); color:#fff; border:none; border-radius:var(--radius); font-size:15px; font-family:var(--sans); cursor:pointer; transition:opacity 0.15s; font-weight:500; }
+.add-btn:hover { opacity:0.85; }
+.bucket { margin-bottom:1.5rem; }
+.task-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:5px; overflow:hidden; transition:border-color 0.15s; }
+.task-card:hover { border-color:var(--border2); }
+.task-card.expanded { border-color:var(--accent); }
+.task-card.is-frog { border-color:color-mix(in srgb,var(--frog) 60%,transparent); }
+.task-card.is-frog.expanded { border-color:var(--frog); }
+.task-main { display:flex; align-items:flex-start; gap:11px; padding:12px 14px; cursor:pointer; user-select:none; }
+.check { width:18px; height:18px; border-radius:50%; border:1.5px solid var(--border2); flex-shrink:0; margin-top:2px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
+.check:hover { border-color:var(--accent); }
+.check.checked { background:var(--accent); border-color:var(--accent); }
+.check.checked::after { content:''; width:4px; height:8px; border:1.5px solid white; border-top:none; border-left:none; transform:rotate(45deg) translateY(-1px); display:block; }
+.task-body { flex:1; min-width:0; }
+.task-title { font-size:15px; color:var(--text); line-height:1.4; word-break:break-word; }
+.task-card.done .task-title { color:var(--muted); text-decoration:line-through; }
+.task-chips { display:flex; gap:5px; margin-top:6px; flex-wrap:wrap; }
+.chip { font-size:11px; font-family:var(--mono); padding:2px 8px; border-radius:20px; border:1px solid var(--border); color:var(--muted); cursor:pointer; background:none; transition:all 0.12s; }
+.chip:hover { border-color:var(--border2); color:var(--text2); }
+.chip.later-on { color:var(--accent); border-color:var(--accent); background:var(--accent-dim); }
+.chip.frog-on  { color:var(--frog);   border-color:var(--frog);   background:var(--frog-dim); }
+.chip.time-on  { color:#b08cff; border-color:#b08cff; background:#1a1030; }
+@media (prefers-color-scheme:light) { .chip.time-on { color:#6b3fd4; border-color:#6b3fd4; background:#ede8ff; } }
+.expand-arrow { color:var(--muted); font-size:11px; flex-shrink:0; margin-top:4px; transition:transform 0.15s; }
+.expanded .expand-arrow { transform:rotate(180deg); }
+
+/* Intention panel */
+.intention-panel { padding:0 14px 14px; border-top:1px solid var(--border); display:none; }
+.expanded .intention-panel { display:block; }
+.int-grid { display:flex; flex-direction:column; gap:10px; margin-top:14px; }
+.int-row { display:flex; align-items:baseline; gap:10px; }
+.int-label { font-size:10px; font-family:var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; width:78px; flex-shrink:0; padding-top:2px; }
+.int-input { flex:1; font-size:13px; font-family:var(--sans); color:var(--text); background:transparent; border:none; border-bottom:1px solid var(--border); padding:3px 0; outline:none; transition:border-color 0.15s; min-width:0; }
+.int-input:focus { border-color:var(--accent); }
+.int-input::placeholder { color:var(--muted); font-size:12px; }
+
+/* Notes feed */
+.notes-section { margin-top:14px; padding-top:12px; border-top:1px solid var(--border); }
+.notes-label { font-size:10px; font-family:var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:8px; display:block; }
+.notes-feed { display:flex; flex-direction:column; gap:6px; margin-bottom:8px; }
+.note-entry { background:var(--surface2); border-radius:var(--radius-sm); padding:8px 10px; }
+.note-ts { font-size:10px; font-family:var(--mono); color:var(--muted); margin-bottom:4px; }
+.note-text { font-size:13px; color:var(--text); line-height:1.5; white-space:pre-wrap; }
+.note-add-row { display:flex; gap:6px; align-items:flex-end; }
+.note-textarea { flex:1; font-size:13px; font-family:var(--sans); color:var(--text); background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:7px 10px; outline:none; resize:none; min-height:54px; line-height:1.5; transition:border-color 0.15s; }
+.note-textarea:focus { border-color:var(--accent); }
+.note-textarea::placeholder { color:var(--muted); font-size:12px; }
+.note-submit { height:32px; padding:0 12px; background:var(--surface3); color:var(--text2); border:1px solid var(--border2); border-radius:var(--radius-sm); font-size:11px; font-family:var(--mono); cursor:pointer; white-space:nowrap; transition:all 0.15s; flex-shrink:0; }
+.note-submit:hover { border-color:var(--accent); color:var(--accent); }
+.task-actions { display:flex; justify-content:flex-end; margin-top:12px; }
+.del-btn { font-size:11px; font-family:var(--mono); color:var(--danger); background:none; border:none; cursor:pointer; padding:0; opacity:0.5; }
+.del-btn:hover { opacity:1; }
+.completed-toggle { font-size:11px; font-family:var(--mono); color:var(--muted); background:none; border:none; cursor:pointer; display:flex; align-items:center; gap:5px; padding:8px 2px; letter-spacing:0.04em; }
+.completed-toggle:hover { color:var(--text2); }
+
+/* ── Today / timeblock view ── */
+.tb-slot { margin-bottom:1.5rem; }
+.tb-slot-header { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.tb-slot-time { font-size:11px; font-family:var(--mono); color:#b08cff; width:90px; flex-shrink:0; }
+@media (prefers-color-scheme:light) { .tb-slot-time { color:#6b3fd4; } }
+.tb-slot-line { flex:1; height:1px; background:var(--border); }
+.tb-task-row { display:flex; align-items:center; gap:10px; padding:10px 13px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:4px; }
+.tb-task-row.is-frog { border-color:color-mix(in srgb,var(--frog) 50%,transparent); }
+.tb-task-title { font-size:14px; color:var(--text); flex:1; }
+.tb-task-action { font-size:11px; color:var(--muted); font-family:var(--mono); margin-top:3px; }
+.tb-unplaced { color:var(--muted); font-size:12px; font-family:var(--mono); padding:1.5rem 0; text-align:center; }
+
+/* ── Log view ── */
+.log-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+.log-export-btn { font-size:11px; font-family:var(--mono); color:var(--muted); background:none; border:1px solid var(--border2); border-radius:var(--radius-sm); padding:4px 10px; cursor:pointer; letter-spacing:0.03em; transition:all 0.15s; }
+.log-export-btn:hover { color:var(--text2); border-color:var(--muted); }
+.log-bars-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px; margin-bottom:1.5rem; }
+.log-bar-row { display:flex; align-items:center; gap:10px; margin-bottom:5px; }
+.log-bar-date { font-size:10px; font-family:var(--mono); color:var(--muted); width:64px; flex-shrink:0; }
+.log-bar-track { flex:1; height:5px; background:var(--surface3); border-radius:3px; overflow:hidden; }
+.log-bar-fill { height:100%; background:var(--frog); border-radius:3px; transition:width 0.4s; }
+.log-bar-count { font-size:10px; font-family:var(--mono); color:var(--text2); width:16px; text-align:right; }
+.log-day-block { margin-bottom:1.5rem; }
+.log-day-header { font-size:11px; font-family:var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; padding-left:2px; }
+
+/* Morning entry in log */
+.log-morning { background:var(--amber-dim); border:1px solid color-mix(in srgb,var(--amber) 30%,transparent); border-radius:var(--radius); padding:12px 14px; margin-bottom:5px; }
+.log-entry-label { font-size:10px; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; }
+.log-morning .log-entry-label { color:var(--amber); }
+.log-entry-q { font-size:10px; font-family:var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-top:8px; margin-bottom:2px; }
+.log-entry-a { font-size:13px; color:var(--text); line-height:1.5; }
+.log-entry-commit { font-size:13px; font-family:var(--mono); margin-top:8px; }
+.log-morning .log-entry-commit { color:var(--amber); }
+
+/* Task entries in log */
+.log-task-item { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:10px 13px; margin-bottom:4px; }
+.log-task-title { font-size:13px; color:var(--muted); text-decoration:line-through; }
+.log-task-meta { font-size:10px; font-family:var(--mono); color:var(--muted); margin-top:3px; opacity:0.6; }
+.log-task-note { font-size:12px; color:var(--text2); margin-top:6px; font-style:italic; line-height:1.4; border-left:2px solid var(--border2); padding-left:8px; }
+
+/* Shutdown entry in log */
+.log-shutdown { background:var(--blue-dim); border:1px solid color-mix(in srgb,var(--blue) 30%,transparent); border-radius:var(--radius); padding:12px 14px; margin-bottom:5px; }
+.log-shutdown .log-entry-label { color:var(--blue); }
+.log-shutdown .log-entry-commit { color:var(--blue); }
+
+.log-empty { text-align:center; color:var(--muted); font-size:13px; font-family:var(--mono); padding:3rem 0; }
+
+/* ── Toast ── */
+.toast { position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%); background:var(--surface3); border:1px solid var(--border2); border-radius:var(--radius); padding:9px 18px; font-size:13px; font-family:var(--mono); color:var(--text); opacity:0; transition:opacity 0.2s; pointer-events:none; white-space:nowrap; z-index:100; }
+.toast.show { opacity:1; }
+.empty { text-align:center; color:var(--muted); font-size:13px; font-family:var(--mono); padding:3rem 0; }
+
+@media (max-width:480px) { .app { padding:1rem 0.75rem 5rem; } .add-input { font-size:16px; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <span class="app-title">&#9875; intentions</span>
+    <div class="header-right">
+      <div class="sync-dot" id="sync-dot"></div>
+      <button class="hdr-btn" onclick="exportMd()">copy as markdown</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab day-tab active" id="tab-day" onclick="switchTab('day',this)">day</button>
+    <button class="tab" id="tab-tasks" onclick="switchTab('tasks',this)">tasks</button>
+    <button class="tab" id="tab-today" onclick="switchTab('today',this)">today</button>
+    <button class="tab" id="tab-log" onclick="switchTab('log',this)">log</button>
+  </div>
+
+  <!-- DAY VIEW -->
+  <div class="view active" id="view-day">
+    <div class="day-date" id="day-date"></div>
+
+    <!-- Morning done card -->
+    <div class="morning-card-done" id="morning-done">
+      <div class="morning-card-done-label">☀ Morning</div>
+      <div class="morning-card-done-text" id="morning-done-text"></div>
+      <div class="morning-card-done-commit" id="morning-done-commit"></div>
+      <button class="redo-btn" onclick="redoMorning()">redo morning</button>
+    </div>
+
+    <!-- Morning form -->
+    <div class="morning-card" id="morning-form">
+      <div class="day-field">
+        <span class="day-field-label">What's actually true right now?</span>
+        <span class="day-field-hint">Not the anxiety version. The real one.</span>
+        <textarea class="day-field-ta" id="mq-reality" placeholder="Energy level, what's weighing on me, what's clear…" rows="2"></textarea>
+      </div>
+      <div class="day-field">
+        <span class="day-field-label">One thing that would move something meaningful forward</span>
+        <span class="day-field-hint">If nothing else happens, this is enough.</span>
+        <textarea class="day-field-ta" id="mq-one" placeholder="Be specific — not 'work on X', what exactly?" rows="2"></textarea>
+      </div>
+      <div class="day-field">
+        <span class="day-field-label">What am I avoiding, and is it costing me?</span>
+        <span class="day-field-hint">Naming it is enough for now.</span>
+        <textarea class="day-field-ta" id="mq-avoid" placeholder="Optional — skip if nothing comes up" rows="2"></textarea>
+      </div>
+      <div class="day-field">
+        <span class="day-field-label day-field-accent-label">Today's commitment</span>
+        <span class="day-field-prefix">Today I will</span>
+        <input class="day-field-input" id="mq-commit" type="text" placeholder="… by [time]">
+      </div>
+    </div>
+    <button class="day-begin-btn" id="morning-begin-btn" onclick="saveMorning()" style="display:none">begin the day →</button>
+
+    <!-- Shutdown separator + section -->
+    <div class="shutdown-sep" id="shutdown-sep" style="display:none">
+      <div class="shutdown-sep-line"></div>
+      <div class="shutdown-sep-label">🌙 close the day</div>
+      <div class="shutdown-sep-line"></div>
+    </div>
+
+    <!-- Shutdown done card -->
+    <div class="shutdown-card-done" id="shutdown-done" style="display:none">
+      <div class="shutdown-card-done-label">🌙 Shutdown</div>
+      <div class="shutdown-card-done-text" id="shutdown-done-text"></div>
+      <div class="shutdown-card-done-seed" id="shutdown-done-seed"></div>
+      <button class="redo-btn" onclick="redoShutdown()">redo shutdown</button>
+    </div>
+
+    <!-- Shutdown form -->
+    <div class="shutdown-card" id="shutdown-form" style="display:none">
+      <div class="day-field">
+        <span class="day-field-label">What actually happened today?</span>
+        <span class="day-field-hint">Honest, not curated.</span>
+        <textarea class="day-field-ta" id="sq-happened" placeholder="What got done, what didn't, what surprised me…" rows="2"></textarea>
+      </div>
+      <div class="day-field">
+        <span class="day-field-label">What am I avoiding that I need to name before I close?</span>
+        <span class="day-field-hint">Optional — set it down so you can stop carrying it.</span>
+        <textarea class="day-field-ta" id="sq-avoiding" placeholder="Something unresolved, unspoken, or sitting in my chest…" rows="2"></textarea>
+      </div>
+      <div class="day-field">
+        <span class="day-field-label day-field-blue-label">Tomorrow</span>
+        <span class="day-field-prefix">First thing tomorrow I will</span>
+        <input class="day-field-input" id="sq-seed" type="text" placeholder="one small specific thing">
+      </div>
+    </div>
+    <button class="day-close-btn" id="shutdown-close-btn" onclick="saveShutdown()" style="display:none">close the day →</button>
+  </div>
+
+  <!-- TASKS VIEW -->
+  <div class="view" id="view-tasks">
+    <div class="add-row">
+      <input id="new-task" class="add-input" type="text" placeholder="Add a task…" autocomplete="off" onkeydown="if(event.key==='Enter')addTask()">
+      <button class="add-btn" onclick="addTask()">Add</button>
+    </div>
+    <div id="frog-bucket" class="bucket"></div>
+    <div id="today-bucket" class="bucket"></div>
+    <div id="later-bucket" class="bucket"></div>
+    <div id="completed-section"></div>
+  </div>
+
+  <!-- TODAY / TIMEBLOCK VIEW -->
+  <div class="view" id="view-today">
+    <div id="tb-content"></div>
+  </div>
+
+  <!-- LOG VIEW -->
+  <div class="view" id="view-log">
+    <div class="log-header">
+      <div class="section-label" style="margin-bottom:0">Last 14 days</div>
+      <button class="log-export-btn" onclick="exportLog()">export log</button>
+    </div>
+    <div class="log-bars-wrap">
+      <div id="log-bars"></div>
+    </div>
+    <div id="log-list"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://tdvtheiuvzvknyzcciiy.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRkdnRoZWl1dnp2a255emNjaWl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0Mjk0ODcsImV4cCI6MjA5ODAwNTQ4N30.4agcSh4c-WVs32WsoOiIFJOpC6r8sQX8DbLyk6my_AY';
+const USER_ID    = 'yatan';
+const CACHE_KEY  = 'intentions-cache';
+const MKEY       = 'intentions-morning';
+const SKEY       = 'intentions-shutdown';
+
+let tasks = [], showDone = false, saveTimer = null, currentTab = 'day';
+
+// ── Helpers ──────────────────────────────────────────────────
+
+function sbH(extra={}) {
+  return { 'Content-Type':'application/json', 'apikey':SUPABASE_KEY, 'Authorization':'Bearer '+SUPABASE_KEY, 'Prefer':'return=minimal', ...extra };
+}
+function todayKey() {
+  const d = new Date();
+  return d.getFullYear() + '-' +
+    String(d.getMonth()+1).padStart(2,'0') + '-' +
+    String(d.getDate()).padStart(2,'0');
+}
+function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,5); }
+function scheduleUpsert(t) { clearTimeout(saveTimer); saveTimer=setTimeout(()=>upsertTask(t),600); }
+function updateCache() { localStorage.setItem(CACHE_KEY,JSON.stringify(tasks)); }
+function setSyncDot(s) { document.getElementById('sync-dot').className='sync-dot '+s; }
+function showToast(msg,dur=2500) { const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),dur); }
+
+function switchTab(tab,el) {
+  currentTab=tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('view-'+tab).classList.add('active');
+  if (tab==='log')   renderLog();
+  if (tab==='today') renderToday();
+  if (tab==='day')   renderDay();
+}
+
+// ── Supabase ─────────────────────────────────────────────────
+
+async function sb(path,opts={}) {
+  const res = await fetch(SUPABASE_URL+'/rest/v1/'+path, { headers:sbH(opts.headers||{}), ...opts });
+  if (!res.ok) throw new Error(res.status);
+  const ct = res.headers.get('content-type')||'';
+  return ct.includes('json') ? res.json() : null;
+}
+
+async function loadFromSupabase() {
+  setSyncDot('syncing');
+  try {
+    const rows = await sb('tasks?user_id=eq.'+USER_ID+'&select=id,data');
+    tasks = rows.map(r=>r.data);
+    updateCache(); setSyncDot('synced'); render();
+  } catch {
+    setSyncDot('error');
+    const c=localStorage.getItem(CACHE_KEY); if(c){try{tasks=JSON.parse(c);}catch{tasks=[];}} 
+    showToast('Offline — cached tasks'); render();
+  }
+}
+
+async function upsertTask(t) {
+  setSyncDot('syncing');
+  try {
+    await sb('tasks',{method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({id:t.id,user_id:USER_ID,data:t,updated_at:new Date().toISOString()})});
+    setSyncDot('synced'); updateCache();
+  } catch { setSyncDot('error'); }
+}
+
+async function deleteFromSupabase(id) {
+  try { await sb('tasks?id=eq.'+id+'&user_id=eq.'+USER_ID,{method:'DELETE'}); } catch {}
+}
+
+async function logCompletion(t) {
+  const date=todayKey();
+  try {
+    const rows=await sb('daily_log?date=eq.'+date+'&user_id=eq.'+USER_ID+'&select=count,tasks');
+    const ex=rows[0]; const pt=ex?(ex.tasks||[]):[];  const pc=ex?(ex.count||0):0;
+    const entry={id:t.id,title:t.title,completedAt:new Date().toISOString(),notes:t.notes||[]};
+    await sb('daily_log',{method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({date,user_id:USER_ID,count:pc+1,tasks:[...pt,entry]})});
+  } catch {}
+}
+
+async function unlogCompletion(id) {
+  const date=todayKey();
+  try {
+    const rows=await sb('daily_log?date=eq.'+date+'&user_id=eq.'+USER_ID+'&select=count,tasks');
+    if(!rows[0]) return;
+    const nt=(rows[0].tasks||[]).filter(t=>t.id!==id);
+    await sb('daily_log?date=eq.'+date+'&user_id=eq.'+USER_ID,{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({count:Math.max(0,(rows[0].count||1)-1),tasks:nt})});
+  } catch {}
+}
+
+// ── Task actions ──────────────────────────────────────────────
+
+function addTask() {
+  const inp=document.getElementById('new-task'); const title=inp.value.trim(); if(!title) return;
+  const t={id:uid(),title,due:'today',frog:false,done:false,expanded:false,createdAt:new Date().toISOString(),intention:{action:'',when:'',where:'',obstacle:'',backup:''}};
+  tasks.unshift(t); inp.value=''; updateCache(); render(); upsertTask(t);
+}
+function toggleDone(id,e) {
+  e&&e.stopPropagation(); const t=tasks.find(t=>t.id===id); if(!t) return;
+  const completing=!t.done; t.done=completing; t.expanded=false;
+  if(completing){t.completedAt=new Date().toISOString();logCompletion(t);}else{t.completedAt=null;unlogCompletion(t.id);}
+  updateCache(); render(); upsertTask(t);
+}
+function toggleFrog(id,e)  { e&&e.stopPropagation(); const t=tasks.find(t=>t.id===id); if(!t) return; t.frog=!t.frog; updateCache(); render(); upsertTask(t); }
+function toggleLater(id,e) { e&&e.stopPropagation(); const t=tasks.find(t=>t.id===id); if(!t) return; t.due=t.due==='later'?'today':'later'; updateCache(); render(); upsertTask(t); }
+function toggleExpand(id)  { const t=tasks.find(t=>t.id===id); if(!t) return; t.expanded=!t.expanded; updateCache(); render(); }
+function deleteTask(id,e)  { e&&e.stopPropagation(); tasks=tasks.filter(t=>t.id!==id); updateCache(); render(); deleteFromSupabase(id); }
+function updateField(id,f,v){ const t=tasks.find(t=>t.id===id); if(!t) return; t.intention[f]=v; updateCache(); scheduleUpsert(t); }
+function cycleTimeblock(id) {
+  const slots=['unplaced','morning','afternoon','evening']; const t=tasks.find(t=>t.id===id); if(!t) return;
+  const i=slots.indexOf(t.timeblock||'unplaced'); t.timeblock=slots[(i+1)%slots.length];
+  updateCache(); render(); upsertTask(t); if(currentTab==='today') renderToday();
+}
+function submitNote(id,ta) {
+  const text=ta.value.trim(); if(!text) return; const t=tasks.find(t=>t.id===id); if(!t) return;
+  if(!t.notes) t.notes=[]; t.notes.push({ts:new Date().toISOString(),text}); ta.value='';
+  updateCache(); render(); upsertTask(t);
+}
+function formatNoteDate(ts) {
+  const d=new Date(ts); const time=d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  if(d.toDateString()===new Date().toDateString()) return 'today · '+time;
+  return d.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})+' · '+time;
+}
+
+// ── Task card ─────────────────────────────────────────────────
+
+function makeCard(t) {
+  const int=t.intention||{};
+  const fields=[['action','First action','The literal first thing to do…'],['when','When','After breakfast, at 10am…'],['where','Where','Desk, phone, app…'],['obstacle','Obstacle','What might block this?'],['backup','Backup','If that happens, I will…']];
+  const card=document.createElement('div');
+  card.className='task-card'+(t.done?' done':'')+(t.expanded?' expanded':'')+(t.frog&&!t.done?' is-frog':'');
+  card.onclick=()=>!t.done&&toggleExpand(t.id);
+  const main=document.createElement('div'); main.className='task-main';
+  const check=document.createElement('div'); check.className='check'+(t.done?' checked':''); check.onclick=e=>toggleDone(t.id,e); main.appendChild(check);
+  const body=document.createElement('div'); body.className='task-body';
+  const titleEl=document.createElement('div'); titleEl.className='task-title'; titleEl.textContent=t.title; body.appendChild(titleEl);
+  if(!t.done){
+    const chips=document.createElement('div'); chips.className='task-chips';
+    const lc=document.createElement('button'); lc.className='chip'+(t.due==='later'?' later-on':''); lc.textContent=t.due==='later'?'later':'today'; lc.onclick=e=>toggleLater(t.id,e); chips.appendChild(lc);
+    const fc=document.createElement('button'); fc.className='chip'+(t.frog?' frog-on':''); fc.textContent=t.frog?'🐸 frog':'frog'; fc.onclick=e=>toggleFrog(t.id,e); chips.appendChild(fc);
+    const hasTime=t.timeblock&&t.timeblock!=='unplaced';
+    const tc=document.createElement('button'); tc.className='chip'+(hasTime?' time-on':''); tc.textContent=hasTime?t.timeblock:'no time'; tc.onclick=e=>{e.stopPropagation();cycleTimeblock(t.id);}; chips.appendChild(tc);
+    body.appendChild(chips);
+  }
+  main.appendChild(body);
+  if(!t.done){const arr=document.createElement('span');arr.className='expand-arrow';arr.textContent='▾';main.appendChild(arr);}
+  card.appendChild(main);
+  if(!t.done){
+    const panel=document.createElement('div'); panel.className='intention-panel';
+    const grid=document.createElement('div'); grid.className='int-grid';
+    fields.forEach(([f,label,ph])=>{
+      const row=document.createElement('div'); row.className='int-row';
+      const lbl=document.createElement('span'); lbl.className='int-label'; lbl.textContent=label;
+      const inp=document.createElement('input'); inp.className='int-input'; inp.type='text'; inp.placeholder=ph; inp.value=int[f]||'';
+      inp.onclick=e=>e.stopPropagation(); inp.oninput=e=>updateField(t.id,f,e.target.value);
+      row.appendChild(lbl); row.appendChild(inp); grid.appendChild(row);
+    });
+    panel.appendChild(grid);
+    // Notes
+    const ns=document.createElement('div'); ns.className='notes-section'; ns.onclick=e=>e.stopPropagation();
+    const nl=document.createElement('span'); nl.className='notes-label'; nl.textContent='Notes'; ns.appendChild(nl);
+    const feed=document.createElement('div'); feed.className='notes-feed';
+    (t.notes||[]).forEach(n=>{
+      const en=document.createElement('div'); en.className='note-entry';
+      const ts=document.createElement('div'); ts.className='note-ts'; ts.textContent=formatNoteDate(n.ts);
+      const tx=document.createElement('div'); tx.className='note-text'; tx.textContent=n.text;
+      en.appendChild(ts); en.appendChild(tx); feed.appendChild(en);
+    });
+    ns.appendChild(feed);
+    const ar=document.createElement('div'); ar.className='note-add-row';
+    const ta=document.createElement('textarea'); ta.className='note-textarea'; ta.placeholder='What happened? What got in the way? What did you notice?';
+    ta.onkeydown=e=>{if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){e.preventDefault();submitNote(t.id,ta);}};
+    const btn=document.createElement('button'); btn.className='note-submit'; btn.textContent='add'; btn.onclick=()=>submitNote(t.id,ta);
+    ar.appendChild(ta); ar.appendChild(btn); ns.appendChild(ar); panel.appendChild(ns);
+    const acts=document.createElement('div'); acts.className='task-actions';
+    const del=document.createElement('button'); del.className='del-btn'; del.textContent='delete'; del.onclick=e=>deleteTask(t.id,e);
+    acts.appendChild(del); panel.appendChild(acts); card.appendChild(panel);
+  }
+  return card;
+}
+
+// ── Render tasks ──────────────────────────────────────────────
+
+function render() {
+  const open=tasks.filter(t=>!t.done); const frogs=open.filter(t=>t.frog);
+  const today=open.filter(t=>!t.frog&&t.due==='today'); const later=open.filter(t=>!t.frog&&t.due==='later');
+  const done=tasks.filter(t=>t.done);
+  const fEl=document.getElementById('frog-bucket'); const tEl=document.getElementById('today-bucket');
+  const lEl=document.getElementById('later-bucket'); const cEl=document.getElementById('completed-section');
+  fEl.innerHTML=''; tEl.innerHTML=''; lEl.innerHTML=''; cEl.innerHTML='';
+  if(frogs.length){const l=document.createElement('div');l.className='section-label';l.textContent='🐸 Frog — do this first';fEl.appendChild(l);frogs.forEach(t=>fEl.appendChild(makeCard(t)));}
+  if(today.length){const l=document.createElement('div');l.className='section-label';l.textContent='Today';tEl.appendChild(l);today.forEach(t=>tEl.appendChild(makeCard(t)));}
+  if(!frogs.length&&!today.length){const e=document.createElement('div');e.className='empty';e.textContent='No tasks yet — add one above';tEl.appendChild(e);}
+  if(later.length){const l=document.createElement('div');l.className='section-label';l.textContent='Later';lEl.appendChild(l);later.forEach(t=>lEl.appendChild(makeCard(t)));}
+  if(done.length){
+    const tog=document.createElement('button');tog.className='completed-toggle';tog.innerHTML=(showDone?'▾':'▸')+' completed ('+done.length+')';tog.onclick=()=>{showDone=!showDone;render();};
+    cEl.appendChild(tog); if(showDone) done.forEach(t=>cEl.appendChild(makeCard(t)));
+  }
+}
+
+// ── Today / timeblock ─────────────────────────────────────────
+
+function renderToday() {
+  const el=document.getElementById('tb-content'); el.innerHTML='';
+  const open=tasks.filter(t=>!t.done&&t.due!=='later');
+  const slotL={morning:'Morning',afternoon:'Afternoon',evening:'Evening'};
+  const slotT={morning:'8:00 – 12:00',afternoon:'12:00 – 17:00',evening:'17:00 – 20:00'};
+  let hasAny=false;
+  ['morning','afternoon','evening'].forEach(slot=>{
+    const st=open.filter(t=>t.timeblock===slot); if(!st.length) return; hasAny=true;
+    const block=document.createElement('div'); block.className='tb-slot';
+    const hdr=document.createElement('div'); hdr.className='tb-slot-header';
+    const tEl=document.createElement('div'); tEl.className='tb-slot-time'; tEl.textContent=slotL[slot]+' · '+slotT[slot];
+    const line=document.createElement('div'); line.className='tb-slot-line';
+    hdr.appendChild(tEl); hdr.appendChild(line); block.appendChild(hdr);
+    st.forEach(t=>{
+      const row=document.createElement('div'); row.className='tb-task-row'+(t.frog?' is-frog':'');
+      const check=document.createElement('div'); check.className='check'+(t.done?' checked':''); check.onclick=e=>{toggleDone(t.id,e);renderToday();}; row.appendChild(check);
+      const body=document.createElement('div'); body.style.flex='1';
+      const title=document.createElement('div'); title.className='tb-task-title'; title.textContent=(t.frog?'🐸 ':'')+t.title; body.appendChild(title);
+      if(t.intention?.action){const a=document.createElement('div');a.className='tb-task-action';a.textContent='→ '+t.intention.action;body.appendChild(a);}
+      row.appendChild(body); block.appendChild(row);
+    }); el.appendChild(block);
+  });
+  const unplaced=open.filter(t=>!t.timeblock||t.timeblock==='unplaced');
+  if(unplaced.length){
+    hasAny=true; const block=document.createElement('div'); block.className='tb-slot';
+    const hdr=document.createElement('div'); hdr.className='tb-slot-header';
+    const tEl=document.createElement('div'); tEl.className='tb-slot-time'; tEl.style.color='var(--muted)'; tEl.textContent='Unplaced';
+    const line=document.createElement('div'); line.className='tb-slot-line';
+    hdr.appendChild(tEl); hdr.appendChild(line); block.appendChild(hdr);
+    unplaced.forEach(t=>{const row=document.createElement('div');row.className='tb-task-row';const title=document.createElement('div');title.className='tb-task-title';title.style.color='var(--muted)';title.textContent=t.title;row.appendChild(title);block.appendChild(row);});
+    el.appendChild(block);
+  }
+  if(!hasAny){const e=document.createElement('div');e.className='tb-unplaced';e.textContent='No tasks for today — assign timeblocks in the tasks tab';el.appendChild(e);}
+}
+
+// ── Day view (morning + shutdown) ─────────────────────────────
+
+function show(id,visible) { document.getElementById(id).style.display=visible?'':'none'; }
+
+async function renderDay() {
+  const d=new Date();
+  document.getElementById('day-date').textContent=d.toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'}).toUpperCase();
+
+  // Load morning
+  let mEntry=null;
+  try {
+    const rows=await sb('morning_checkin?date=eq.'+todayKey()+'&user_id=eq.'+USER_ID);
+    if(rows&&rows.length){mEntry=rows[0];localStorage.setItem(MKEY+'-'+todayKey(),JSON.stringify(mEntry));}
+  } catch {}
+  if(!mEntry){const c=localStorage.getItem(MKEY+'-'+todayKey());if(c){try{mEntry=JSON.parse(c);}catch{}}}
+
+  const tab=document.getElementById('tab-day');
+  if(mEntry){
+    document.getElementById('morning-done-text').textContent='Today I will';
+    document.getElementById('morning-done-commit').textContent=mEntry.commit||'(no commitment set)';
+    show('morning-done',true); show('morning-form',false); show('morning-begin-btn',false);
+    if(!tab.querySelector('.tab-dot')){const dot=document.createElement('span');dot.className='tab-dot';tab.appendChild(dot);}
+  } else {
+    show('morning-done',false); show('morning-form',true); show('morning-begin-btn',true);
+    const dot=tab.querySelector('.tab-dot'); if(dot) dot.remove();
+    ['mq-reality','mq-one','mq-avoid','mq-commit'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  }
+  // Shutdown always visible, independent of morning
+  show('shutdown-sep',true);
+  await renderShutdown();
+}
+
+async function saveMorning() {
+  const reality=document.getElementById('mq-reality').value.trim();
+  const one=document.getElementById('mq-one').value.trim();
+  const avoid=document.getElementById('mq-avoid').value.trim();
+  const commit=document.getElementById('mq-commit').value.trim();
+  if(!one&&!commit){showToast('Fill in at least one field to begin');return;}
+  const entry={date:todayKey(),user_id:USER_ID,reality,one,avoid,commit,saved_at:new Date().toISOString()};
+  localStorage.setItem(MKEY+'-'+todayKey(),JSON.stringify(entry));
+  try { await sb('morning_checkin',{method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(entry)}); } catch {}
+  renderDay();
+  setTimeout(()=>switchTab('tasks',document.getElementById('tab-tasks')),600);
+}
+
+async function redoMorning() {
+  localStorage.removeItem(MKEY+'-'+todayKey());
+  try { await sb('morning_checkin?date=eq.'+todayKey()+'&user_id=eq.'+USER_ID,{method:'DELETE'}); } catch {}
+  renderDay();
+}
+
+async function renderShutdown() {
+  let sEntry=null;
+  try {
+    const rows=await sb('shutdown?date=eq.'+todayKey()+'&user_id=eq.'+USER_ID);
+    if(rows&&rows.length){sEntry=rows[0];localStorage.setItem(SKEY+'-'+todayKey(),JSON.stringify(sEntry));}
+  } catch {}
+  if(!sEntry){const c=localStorage.getItem(SKEY+'-'+todayKey());if(c){try{sEntry=JSON.parse(c);}catch{}}}
+
+  if(sEntry){
+    document.getElementById('shutdown-done-text').textContent=sEntry.happened||'';
+    document.getElementById('shutdown-done-seed').textContent=sEntry.seed?'→ Tomorrow: '+sEntry.seed:'';
+    show('shutdown-done',true); show('shutdown-form',false); show('shutdown-close-btn',false);
+  } else {
+    show('shutdown-done',false); show('shutdown-form',true); show('shutdown-close-btn',true);
+    ['sq-happened','sq-avoiding','sq-seed'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    // Pre-fill seed from yesterday
+    try {
+      const yd=new Date(); yd.setDate(yd.getDate()-1);
+      const yc=localStorage.getItem(SKEY+'-'+yd.toISOString().slice(0,10));
+      if(yc){const ys=JSON.parse(yc);const se=document.getElementById('sq-seed');if(se&&!se.value&&ys.seed)se.value=ys.seed;}
+    } catch {}
+  }
+}
+
+async function saveShutdown() {
+  const happened=document.getElementById('sq-happened').value.trim();
+  const avoiding=document.getElementById('sq-avoiding').value.trim();
+  const seed=document.getElementById('sq-seed').value.trim();
+  if(!happened&&!seed){showToast('Add at least one field to close the day');return;}
+  const entry={date:todayKey(),user_id:USER_ID,happened,avoiding,seed,saved_at:new Date().toISOString()};
+  localStorage.setItem(SKEY+'-'+todayKey(),JSON.stringify(entry));
+  try { await sb('shutdown',{method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(entry)}); } catch {}
+  renderShutdown();
+}
+
+async function redoShutdown() {
+  localStorage.removeItem(SKEY+'-'+todayKey());
+  try { await sb('shutdown?date=eq.'+todayKey()+'&user_id=eq.'+USER_ID,{method:'DELETE'}); } catch {}
+  renderShutdown();
+}
+
+// ── Log ───────────────────────────────────────────────────────
+
+function formatDateLabel(d) {
+  const today=new Date().toISOString().slice(0,10);
+  const yest=new Date(Date.now()-86400000).toISOString().slice(0,10);
+  if(d===today) return 'today'; if(d===yest) return 'yesterday';
+  return new Date(d+'T12:00:00').toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'});
+}
+
+async function fetchAll(table) {
+  try {
+    const rows=await sb(table+'?user_id=eq.'+USER_ID+'&order=date.desc&limit=14');
+    return Array.isArray(rows)?rows:[];
+  } catch {
+    const local=[]; for(let i=0;i<14;i++){const d=new Date();d.setDate(d.getDate()-i);const k=table==='morning_checkin'?MKEY:SKEY;const v=localStorage.getItem(k+'-'+d.toISOString().slice(0,10));if(v){try{local.push(JSON.parse(v));}catch{}}} return local;
+  }
+}
+
+async function renderLog() {
+  const barsEl=document.getElementById('log-bars'); const listEl=document.getElementById('log-list');
+  barsEl.innerHTML='<div style="font-size:11px;font-family:var(--mono);color:var(--muted);padding:4px 0">Loading…</div>';
+  listEl.innerHTML='';
+  const [taskRows,morningRows,shutdownRows]=await Promise.all([
+    fetchAll('daily_log'), fetchAll('morning_checkin'), fetchAll('shutdown')
+  ]);
+  const tMap={},mMap={},sMap={};
+  taskRows.forEach(r=>{tMap[r.date]=r;}); morningRows.forEach(r=>{mMap[r.date]=r;}); shutdownRows.forEach(r=>{sMap[r.date]=r;});
+  const maxCount=Math.max(...taskRows.map(r=>r.count||0),1);
+  const days=[]; for(let i=0;i<14;i++){const d=new Date();d.setDate(d.getDate()-i);days.push(d.toISOString().slice(0,10));}
+  barsEl.innerHTML='';
+  days.forEach(date=>{
+    const row=tMap[date]; const count=row?(row.count||0):0; const pct=Math.round((count/maxCount)*100);
+    const br=document.createElement('div'); br.className='log-bar-row';
+    const de=document.createElement('div'); de.className='log-bar-date'; de.textContent=formatDateLabel(date);
+    const tr=document.createElement('div'); tr.className='log-bar-track';
+    const fi=document.createElement('div'); fi.className='log-bar-fill'; fi.style.width=count?pct+'%':'0%'; if(!count)fi.style.background='var(--surface3)'; tr.appendChild(fi);
+    const ce=document.createElement('div'); ce.className='log-bar-count'; ce.textContent=count||'—'; if(!count)ce.style.color='var(--muted)';
+    br.appendChild(de); br.appendChild(tr); br.appendChild(ce); barsEl.appendChild(br);
+  });
+  const allDates=[...new Set([...taskRows.map(r=>r.date),...morningRows.map(r=>r.date),...shutdownRows.map(r=>r.date)])].sort().reverse();
+  if(!allDates.length){listEl.innerHTML='<div class="log-empty">No entries yet</div>';return;}
+  allDates.forEach(date=>{
+    const block=document.createElement('div'); block.className='log-day-block';
+    const hdr=document.createElement('div'); hdr.className='log-day-header';
+    const tc=tMap[date]?(tMap[date].count||0):0;
+    hdr.textContent=formatDateLabel(date).toUpperCase()+(tc?' · '+tc+' done':''); block.appendChild(hdr);
+    // Morning
+    const m=mMap[date];
+    if(m&&(m.reality||m.one||m.commit)){
+      const mc=document.createElement('div'); mc.className='log-morning';
+      const ml=document.createElement('div'); ml.className='log-entry-label'; ml.textContent='☀ Morning'; mc.appendChild(ml);
+      const addQ=(label,val)=>{if(!val)return;const q=document.createElement('div');q.className='log-entry-q';q.textContent=label;const a=document.createElement('div');a.className='log-entry-a';a.textContent=val;mc.appendChild(q);mc.appendChild(a);};
+      addQ('Reality',m.reality); addQ('One thing',m.one); addQ('Avoiding',m.avoid);
+      if(m.commit){const cl=document.createElement('div');cl.className='log-entry-commit';cl.textContent='→ Today I will '+m.commit;mc.appendChild(cl);}
+      block.appendChild(mc);
+    }
+    // Tasks
+    const tr=tMap[date];
+    if(tr&&tr.tasks&&tr.tasks.length){
+      tr.tasks.forEach(t=>{
+        const item=document.createElement('div'); item.className='log-task-item';
+        const title=document.createElement('div'); title.className='log-task-title'; title.textContent=t.title; item.appendChild(title);
+        if(t.completedAt){const meta=document.createElement('div');meta.className='log-task-meta';meta.textContent='✓ '+new Date(t.completedAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});item.appendChild(meta);}
+        (t.notes||[]).slice(-1).forEach(n=>{const note=document.createElement('div');note.className='log-task-note';note.textContent=n.text;item.appendChild(note);});
+        block.appendChild(item);
+      });
+    }
+    // Shutdown
+    const s=sMap[date];
+    if(s&&(s.happened||s.seed)){
+      const sc=document.createElement('div'); sc.className='log-shutdown';
+      const sl=document.createElement('div'); sl.className='log-entry-label'; sl.textContent='🌙 Shutdown'; sc.appendChild(sl);
+      const addQ=(label,val)=>{if(!val)return;const q=document.createElement('div');q.className='log-entry-q';q.textContent=label;const a=document.createElement('div');a.className='log-entry-a';a.textContent=val;sc.appendChild(q);sc.appendChild(a);};
+      addQ('What happened',s.happened); addQ('Avoiding',s.avoiding);
+      if(s.seed){const cl=document.createElement('div');cl.className='log-entry-commit';cl.textContent='→ Tomorrow: '+s.seed;sc.appendChild(cl);}
+      block.appendChild(sc);
+    }
+    listEl.appendChild(block);
+  });
+}
+
+// ── Export log as markdown ─────────────────────────────────────
+
+async function exportLog() {
+  const [taskRows,morningRows,shutdownRows]=await Promise.all([
+    fetchAll('daily_log'), fetchAll('morning_checkin'), fetchAll('shutdown')
+  ]);
+  const tMap={},mMap={},sMap={};
+  taskRows.forEach(r=>{tMap[r.date]=r;}); morningRows.forEach(r=>{mMap[r.date]=r;}); shutdownRows.forEach(r=>{sMap[r.date]=r;});
+  const allDates=[...new Set([...taskRows.map(r=>r.date),...morningRows.map(r=>r.date),...shutdownRows.map(r=>r.date)])].sort().reverse();
+  if(!allDates.length){showToast('No log entries yet');return;}
+  let md='# Intentions Log\n_Exported '+new Date().toLocaleDateString([],{year:'numeric',month:'long',day:'numeric'})+'_\n\n---\n\n';
+  allDates.forEach(date=>{
+    md+='## '+formatDateLabel(date).charAt(0).toUpperCase()+formatDateLabel(date).slice(1)+' ('+date+')\n\n';
+    const m=mMap[date];
+    if(m){
+      md+='### ☀ Morning\n\n';
+      if(m.reality) md+='**Reality:** '+m.reality+'\n\n';
+      if(m.one)     md+='**One thing:** '+m.one+'\n\n';
+      if(m.avoid)   md+='**Avoiding:** '+m.avoid+'\n\n';
+      if(m.commit)  md+='**Today I will** '+m.commit+'\n\n';
+    }
+    const tr=tMap[date];
+    if(tr&&tr.tasks&&tr.tasks.length){
+      md+='### ✓ Completed\n\n';
+      tr.tasks.forEach(t=>{
+        md+='- [x] '+t.title;
+        if(t.completedAt) md+=' _('+new Date(t.completedAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+')_';
+        md+='\n';
+        (t.notes||[]).forEach(n=>{md+='  > '+n.text+'\n';});
+      });
+      md+='\n';
+    }
+    const s=sMap[date];
+    if(s){
+      md+='### 🌙 Shutdown\n\n';
+      if(s.happened) md+='**What happened:** '+s.happened+'\n\n';
+      if(s.avoiding) md+='**Avoiding:** '+s.avoiding+'\n\n';
+      if(s.seed)     md+='**Tomorrow:** '+s.seed+'\n\n';
+    }
+    md+='---\n\n';
+  });
+  navigator.clipboard.writeText(md.trim()).then(()=>showToast('Log copied — '+allDates.length+' days')).catch(()=>prompt('Copy this:',md.trim()));
+}
+
+// ── Daily task export ─────────────────────────────────────────
+
+function exportMd() {
+  const date=new Date().toISOString().slice(0,10);
+  const open=tasks.filter(t=>!t.done); const frogs=open.filter(t=>t.frog);
+  const today=open.filter(t=>!t.frog&&t.due==='today'); const later=open.filter(t=>t.due==='later');
+  let md='# ⚓ Daily Focus — '+date+'\n\n**Energy:**   **Constraint:**\n\n---\n\n';
+  const mEntry=localStorage.getItem(MKEY+'-'+date);
+  if(mEntry){try{const m=JSON.parse(mEntry);md+='## Morning\n\n';if(m.reality)md+='Reality: '+m.reality+'\n';if(m.one)md+='One thing: '+m.one+'\n';if(m.avoid)md+='Avoiding: '+m.avoid+'\n';if(m.commit)md+='Today I will '+m.commit+'\n';md+='\n---\n\n';}catch{}}
+  if(frogs.length){const f=frogs[0];const int=f.intention||{};md+='## 🐸 Frog\n\n**Task:** '+f.title+'\n**First action:** '+(int.action||'')+'\n';if(int.when)md+='**When:** '+int.when+'\n';if(int.where)md+='**Where:** '+int.where+'\n';md+='\n*I only need 5 minutes. I\'m allowed to do this badly.*\n\n---\n\n';}
+  md+='## Today\'s three\n\n';
+  const placed=[...frogs,...today].filter(t=>t.timeblock&&t.timeblock!=='unplaced');
+  const unplaced=[...frogs,...today].filter(t=>!t.timeblock||t.timeblock==='unplaced');
+  if(placed.length){['morning','afternoon','evening'].forEach(slot=>{const st=placed.filter(t=>t.timeblock===slot);if(!st.length)return;md+='**'+slot.charAt(0).toUpperCase()+slot.slice(1)+'**\n';st.forEach(t=>{const int=t.intention||{};md+='- [ ] '+t.title+(int.action?' _(→ '+int.action+')_':'')+'\n';});md+='\n';});}
+  else { unplaced.slice(0,3).forEach((t,i)=>{md+=(i+1)+'. '+t.title+'\n';}); }
+  if(later.length){md+='\n---\n\n## Later\n\n';later.forEach(t=>{md+='- [ ] '+t.title+'\n';});}
+  md+='\n---\n\n## Notes\n\n';
+  navigator.clipboard.writeText(md.trim()).then(()=>showToast('Copied to clipboard')).catch(()=>prompt('Copy this:',md.trim()));
+}
+
+// ── Init ─────────────────────────────────────────────────────
+
+const hour=new Date().getHours();
+if(hour>=10){switchTab('tasks',document.getElementById('tab-tasks'));}else{renderDay();}
+loadFromSupabase();
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('/tasks/sw.js').catch(e=>console.log('SW:',e));});
+}
+</script>
+</body>
+</html>
