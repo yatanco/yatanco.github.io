@@ -191,6 +191,135 @@ body { font-family:var(--sans); background:var(--bg); color:var(--text); min-hei
 .completed-toggle { font-size:11px; font-family:var(--mono); color:var(--muted); background:none; border:none; cursor:pointer; display:flex; align-items:center; gap:5px; padding:8px 2px; letter-spacing:0.04em; }
 .completed-toggle:hover { color:var(--text2); }
 
+/* ── Focus mode overlay ── */
+.focus-overlay {
+  position:fixed; inset:0; z-index:200;
+  background:var(--bg);
+  display:flex; flex-direction:column;
+  padding:0;
+  opacity:0; pointer-events:none;
+  transition:opacity 0.2s;
+}
+.focus-overlay.active { opacity:1; pointer-events:all; }
+.focus-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1rem 1.25rem 0;
+}
+.focus-close {
+  font-size:11px; font-family:var(--mono); color:var(--muted);
+  background:none; border:none; cursor:pointer; letter-spacing:0.04em;
+}
+.focus-close:hover { color:var(--text2); }
+.focus-session-label {
+  font-size:10px; font-family:var(--mono); color:var(--muted);
+  text-transform:uppercase; letter-spacing:0.1em;
+}
+.focus-body {
+  flex:1; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:0 1.5rem; text-align:center;
+  gap:0;
+}
+.focus-task-title {
+  font-size:20px; font-weight:500; color:var(--text);
+  line-height:1.3; margin-bottom:6px; max-width:420px;
+}
+.focus-first-action {
+  font-size:13px; font-family:var(--mono); color:var(--muted);
+  margin-bottom:2.5rem; max-width:380px; line-height:1.5;
+}
+.focus-timer {
+  font-size:72px; font-family:var(--mono); font-weight:300;
+  color:var(--text); letter-spacing:-2px; line-height:1;
+  margin-bottom:2rem; transition:color 0.3s;
+}
+.focus-timer.urgent { color:var(--amber); }
+.focus-timer.done   { color:var(--frog); }
+.focus-controls { display:flex; gap:10px; margin-bottom:2.5rem; }
+.focus-ctrl-btn {
+  height:40px; padding:0 20px; border-radius:var(--radius);
+  font-size:13px; font-family:var(--mono); cursor:pointer;
+  letter-spacing:0.03em; transition:all 0.15s; border:none;
+}
+.focus-ctrl-btn.primary { background:var(--accent); color:#fff; }
+.focus-ctrl-btn.primary:hover { opacity:0.85; }
+.focus-ctrl-btn.secondary { background:var(--surface2); color:var(--text2); border:1px solid var(--border2); }
+.focus-ctrl-btn.secondary:hover { border-color:var(--muted); color:var(--text); }
+.focus-duration-pick { display:flex; gap:8px; margin-bottom:2.5rem; }
+.focus-dur-btn {
+  height:36px; padding:0 16px; border-radius:var(--radius);
+  font-size:12px; font-family:var(--mono); cursor:pointer;
+  background:var(--surface2); color:var(--text2);
+  border:1px solid var(--border2); transition:all 0.15s;
+}
+.focus-dur-btn:hover, .focus-dur-btn.selected { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+/* Distraction log */
+.focus-log-wrap {
+  width:100%; max-width:420px;
+  border-top:1px solid var(--border); padding-top:1.25rem;
+}
+.focus-log-label {
+  font-size:10px; font-family:var(--mono); color:var(--muted);
+  text-transform:uppercase; letter-spacing:0.1em;
+  margin-bottom:8px; text-align:left; display:block;
+}
+.focus-log-hint {
+  font-size:11px; color:var(--muted); margin-bottom:10px;
+  text-align:left; display:block; line-height:1.4;
+}
+.focus-log-entries {
+  display:flex; flex-direction:column; gap:4px; margin-bottom:8px;
+  max-height:120px; overflow-y:auto;
+}
+.focus-log-entry {
+  font-size:12px; color:var(--text2); text-align:left;
+  padding:5px 8px; background:var(--surface2);
+  border-radius:var(--radius-sm); font-family:var(--mono);
+}
+.focus-log-input-row { display:flex; gap:6px; }
+.focus-log-input {
+  flex:1; font-size:13px; font-family:var(--sans); color:var(--text);
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius-sm); padding:8px 10px; outline:none;
+  transition:border-color 0.15s;
+}
+.focus-log-input:focus { border-color:var(--accent); }
+.focus-log-input::placeholder { color:var(--muted); font-size:12px; }
+.focus-log-add {
+  height:36px; padding:0 12px; background:var(--surface2);
+  color:var(--text2); border:1px solid var(--border2);
+  border-radius:var(--radius-sm); font-size:11px; font-family:var(--mono);
+  cursor:pointer; white-space:nowrap; transition:all 0.15s; flex-shrink:0;
+}
+.focus-log-add:hover { border-color:var(--accent); color:var(--accent); }
+
+/* Post-session screen */
+.focus-done-screen {
+  flex:1; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:0 1.5rem; text-align:center; gap:1rem;
+}
+.focus-done-title { font-size:18px; color:var(--text); font-weight:500; }
+.focus-done-sub { font-size:13px; color:var(--muted); font-family:var(--mono); }
+.focus-note-wrap { width:100%; max-width:420px; text-align:left; }
+.focus-note-label { font-size:10px; font-family:var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px; display:block; }
+.focus-note-ta {
+  width:100%; font-size:14px; font-family:var(--sans); color:var(--text);
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:10px 12px; outline:none;
+  resize:none; min-height:80px; line-height:1.6; transition:border-color 0.15s;
+}
+.focus-note-ta:focus { border-color:var(--accent); }
+.focus-note-ta::placeholder { color:var(--muted); font-size:13px; }
+.focus-save-btn {
+  width:100%; max-width:420px; height:48px;
+  background:var(--frog); color:#fff; border:none;
+  border-radius:var(--radius); font-size:14px; font-family:var(--mono);
+  cursor:pointer; transition:opacity 0.15s; letter-spacing:0.04em;
+}
+.focus-save-btn:hover { opacity:0.85; }
+
 /* ── Timeblock ── */
 .tb-slot { margin-bottom:1.5rem; }
 .tb-slot-header { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
@@ -259,73 +388,82 @@ body { font-family:var(--sans); background:var(--bg); color:var(--text); min-hei
   <div class="view active" id="view-day">
     <div class="day-date" id="day-date"></div>
 
-    <!-- Morning summary (after submit) -->
-    <div class="summary-card morning" id="morning-done">
-      <div class="summary-label">☀ Morning</div>
-      <div class="summary-text">Today I will</div>
-      <div class="summary-sub"  id="morning-done-commit"></div>
-      <button class="redo-btn" onclick="redoMorning()">redo morning</button>
-    </div>
-
-    <!-- Morning form -->
-    <div class="form-card morning" id="morning-form">
-      <div class="day-field">
-        <span class="day-field-label">What's actually true right now?</span>
-        <span class="day-field-hint">Not the anxiety version. The real one.</span>
-        <textarea class="day-field-ta" id="mq-reality" placeholder="Energy level, what's weighing on me, what's clear…" rows="2"></textarea>
-      </div>
-      <div class="day-field">
-        <span class="day-field-label">One thing that would move something meaningful forward</span>
-        <span class="day-field-hint">If nothing else happens, this is enough.</span>
-        <textarea class="day-field-ta" id="mq-one" placeholder="Be specific — not 'work on X', what exactly?" rows="2"></textarea>
-      </div>
-      <div class="day-field">
-        <span class="day-field-label">What am I avoiding, and is it costing me?</span>
-        <span class="day-field-hint">Naming it is enough for now.</span>
-        <textarea class="day-field-ta" id="mq-avoid" placeholder="Optional — skip if nothing comes up" rows="2"></textarea>
-      </div>
-      <div class="day-field">
-        <span class="day-field-label amber">Today's commitment</span>
-        <span class="day-field-prefix">Today I will</span>
-        <input class="day-field-input" id="mq-commit" type="text" placeholder="… by [time]">
-      </div>
-    </div>
-    <button class="day-action-btn morning" id="morning-begin-btn" onclick="saveMorning()">begin the day →</button>
+    <!-- SLOT A: first section (morning in AM, shutdown in PM) -->
+    <div id="slot-a"></div>
 
     <!-- Separator -->
     <div class="day-sep">
       <div class="day-sep-line"></div>
-      <div class="day-sep-label">🌙 close the day</div>
+      <div class="day-sep-label" id="day-sep-label"></div>
       <div class="day-sep-line"></div>
     </div>
 
-    <!-- Shutdown summary (after submit) -->
-    <div class="summary-card shutdown" id="shutdown-done">
-      <div class="summary-label">🌙 Shutdown</div>
-      <div class="summary-text" id="shutdown-done-text"></div>
-      <div class="summary-sub"  id="shutdown-done-seed"></div>
-      <button class="redo-btn" onclick="redoShutdown()">redo shutdown</button>
-    </div>
+    <!-- SLOT B: second section -->
+    <div id="slot-b"></div>
 
-    <!-- Shutdown form -->
-    <div class="form-card shutdown" id="shutdown-form">
-      <div class="day-field">
-        <span class="day-field-label">What actually happened today?</span>
-        <span class="day-field-hint">Honest, not curated.</span>
-        <textarea class="day-field-ta" id="sq-happened" placeholder="What got done, what didn't, what surprised me…" rows="2"></textarea>
+    <!-- Hidden pool — elements moved into slots by JS -->
+    <div id="day-pool" style="display:none">
+      <!-- Morning summary (after submit) -->
+      <div class="summary-card morning" id="morning-done">
+        <div class="summary-label">☀ Morning</div>
+        <div class="summary-text">Today I will</div>
+        <div class="summary-sub" id="morning-done-commit"></div>
+        <button class="redo-btn" onclick="redoMorning()">redo morning</button>
       </div>
-      <div class="day-field">
-        <span class="day-field-label">What am I avoiding that I need to name before I close?</span>
-        <span class="day-field-hint">Optional — set it down so you can stop carrying it.</span>
-        <textarea class="day-field-ta" id="sq-avoiding" placeholder="Something unresolved, unspoken, or sitting in my chest…" rows="2"></textarea>
+
+      <!-- Morning form -->
+      <div class="form-card morning" id="morning-form">
+        <div class="day-field">
+          <span class="day-field-label">What's actually true right now?</span>
+          <span class="day-field-hint">Not the anxiety version. The real one.</span>
+          <textarea class="day-field-ta" id="mq-reality" placeholder="Energy level, what's weighing on me, what's clear…" rows="2"></textarea>
+        </div>
+        <div class="day-field">
+          <span class="day-field-label">One thing that would move something meaningful forward</span>
+          <span class="day-field-hint">If nothing else happens, this is enough.</span>
+          <textarea class="day-field-ta" id="mq-one" placeholder="Be specific — not 'work on X', what exactly?" rows="2"></textarea>
+        </div>
+        <div class="day-field">
+          <span class="day-field-label">What am I avoiding, and is it costing me?</span>
+          <span class="day-field-hint">Naming it is enough for now.</span>
+          <textarea class="day-field-ta" id="mq-avoid" placeholder="Optional — skip if nothing comes up" rows="2"></textarea>
+        </div>
+        <div class="day-field">
+          <span class="day-field-label amber">Today's commitment</span>
+          <span class="day-field-prefix">Today I will</span>
+          <input class="day-field-input" id="mq-commit" type="text" placeholder="… by [time]">
+        </div>
       </div>
-      <div class="day-field">
-        <span class="day-field-label blue">Tomorrow</span>
-        <span class="day-field-prefix">First thing tomorrow I will</span>
-        <input class="day-field-input" id="sq-seed" type="text" placeholder="one small specific thing">
+      <button class="day-action-btn morning" id="morning-begin-btn" onclick="saveMorning()">begin the day →</button>
+
+      <!-- Shutdown summary (after submit) -->
+      <div class="summary-card shutdown" id="shutdown-done">
+        <div class="summary-label">🌙 Shutdown</div>
+        <div class="summary-text" id="shutdown-done-text"></div>
+        <div class="summary-sub"  id="shutdown-done-seed"></div>
+        <button class="redo-btn" onclick="redoShutdown()">redo shutdown</button>
       </div>
+
+      <!-- Shutdown form -->
+      <div class="form-card shutdown" id="shutdown-form">
+        <div class="day-field">
+          <span class="day-field-label">What actually happened today?</span>
+          <span class="day-field-hint">Honest, not curated.</span>
+          <textarea class="day-field-ta" id="sq-happened" placeholder="What got done, what didn't, what surprised me…" rows="2"></textarea>
+        </div>
+        <div class="day-field">
+          <span class="day-field-label">What am I avoiding that I need to name before I close?</span>
+          <span class="day-field-hint">Optional — set it down so you can stop carrying it.</span>
+          <textarea class="day-field-ta" id="sq-avoiding" placeholder="Something unresolved, unspoken, or sitting in my chest…" rows="2"></textarea>
+        </div>
+        <div class="day-field">
+          <span class="day-field-label blue">Tomorrow</span>
+          <span class="day-field-prefix">First thing tomorrow I will</span>
+          <input class="day-field-input" id="sq-seed" type="text" placeholder="one small specific thing">
+        </div>
+      </div>
+      <button class="day-action-btn shutdown" id="shutdown-close-btn" onclick="saveShutdown()">close the day →</button>
     </div>
-    <button class="day-action-btn shutdown" id="shutdown-close-btn" onclick="saveShutdown()">close the day →</button>
   </div>
 
   <!-- TASKS VIEW -->
@@ -356,6 +494,62 @@ body { font-family:var(--sans); background:var(--bg); color:var(--text); min-hei
   </div>
 </div>
 <div class="toast" id="toast"></div>
+
+<!-- FOCUS MODE OVERLAY -->
+<div class="focus-overlay" id="focus-overlay">
+  <div class="focus-header">
+    <span class="focus-session-label" id="focus-session-label">Focus session</span>
+    <button class="focus-close" onclick="closeFocus()">✕ end session</button>
+  </div>
+
+  <!-- Pick duration screen -->
+  <div class="focus-body" id="focus-pick">
+    <div class="focus-task-title" id="focus-title"></div>
+    <div class="focus-first-action" id="focus-action"></div>
+    <div class="focus-duration-pick">
+      <button class="focus-dur-btn selected" onclick="selectDur(this,5)">5m</button>
+      <button class="focus-dur-btn" onclick="selectDur(this,10)">10m</button>
+      <button class="focus-dur-btn" onclick="selectDur(this,25)">25m</button>
+    </div>
+    <div class="focus-controls">
+      <button class="focus-ctrl-btn primary" onclick="startFocus()">start →</button>
+    </div>
+  </div>
+
+  <!-- Running timer screen -->
+  <div class="focus-body" id="focus-running" style="display:none">
+    <div class="focus-task-title" id="focus-running-title"></div>
+    <div class="focus-first-action" id="focus-running-action"></div>
+    <div class="focus-timer" id="focus-timer">05:00</div>
+    <div class="focus-controls">
+      <button class="focus-ctrl-btn secondary" id="focus-pause-btn" onclick="togglePause()">pause</button>
+      <button class="focus-ctrl-btn secondary" onclick="endEarly()">done early</button>
+    </div>
+    <div class="focus-log-wrap">
+      <span class="focus-log-label">Distraction log</span>
+      <span class="focus-log-hint">Feel the urge to switch? Type it here instead of doing it.</span>
+      <div class="focus-log-entries" id="focus-log-entries"></div>
+      <div class="focus-log-input-row">
+        <input class="focus-log-input" id="focus-log-input" type="text"
+          placeholder="I want to check…"
+          onkeydown="if(event.key==='Enter')logDistraction()">
+        <button class="focus-log-add" onclick="logDistraction()">log it</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post-session screen -->
+  <div class="focus-done-screen" id="focus-done-screen" style="display:none">
+    <div class="focus-done-title">Session done ✓</div>
+    <div class="focus-done-sub" id="focus-done-sub"></div>
+    <div class="focus-note-wrap">
+      <span class="focus-note-label">What happened in that session?</span>
+      <textarea class="focus-note-ta" id="focus-note-ta"
+        placeholder="What did you get done? What came up? How did it feel?"></textarea>
+    </div>
+    <button class="focus-save-btn" onclick="saveFocusSession()">save & close</button>
+  </div>
+</div>
 
 <script>
 // ── Config ────────────────────────────────────────────────────
@@ -670,6 +864,10 @@ function makeCard(t) {
     ar.appendChild(ta); ar.appendChild(nb); ns.appendChild(ar); panel.appendChild(ns);
 
     const acts = document.createElement('div'); acts.className = 'task-actions';
+    const focBtn = document.createElement('button'); focBtn.className = 'focus-start-btn';
+    focBtn.textContent = '▶ focus'; focBtn.style.cssText = 'font-size:11px;font-family:var(--mono);color:var(--accent);background:none;border:1px solid var(--accent);border-radius:20px;padding:2px 10px;cursor:pointer;margin-right:auto;opacity:0.8;';
+    focBtn.onclick = e => { e.stopPropagation(); openFocus(t); };
+    acts.appendChild(focBtn);
     const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = 'delete';
     del.onclick = e => deleteTask(t.id, e);
     acts.appendChild(del); panel.appendChild(acts);
@@ -754,6 +952,8 @@ function renderToday() {
 async function renderDay() {
   el('day-date').textContent = new Date().toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase();
 
+  const isMorning = new Date().getHours() < 14; // before 2pm = morning mode
+
   // Morning — try Supabase, fall back to localStorage
   let m = null;
   try {
@@ -762,17 +962,7 @@ async function renderDay() {
   } catch {}
   if (!m) m = lsGet(LS_MORNING + '-' + todayKey());
 
-  const tab = el('tab-day');
-  if (m) {
-    el('morning-done-commit').textContent = m.commit || '(no commitment set)';
-    show('morning-done', true); show('morning-form', false); show('morning-begin-btn', false);
-    if (!tab.querySelector('.tab-dot')) { const dot = document.createElement('span'); dot.className = 'tab-dot'; tab.appendChild(dot); }
-  } else {
-    show('morning-done', false); show('morning-form', true); show('morning-begin-btn', true);
-    const dot = tab.querySelector('.tab-dot'); if (dot) dot.remove();
-  }
-
-  // Shutdown — always visible, independent of morning
+  // Shutdown — try Supabase, fall back to localStorage
   let s = null;
   try {
     const rows = await sbGet('shutdown', 'date=eq.' + todayKey() + '&user_id=eq.' + USER_ID);
@@ -780,6 +970,23 @@ async function renderDay() {
   } catch {}
   if (!s) s = lsGet(LS_SHUTDOWN + '-' + todayKey());
 
+  // Tab dot
+  const tab = el('tab-day');
+  if (m) {
+    if (!tab.querySelector('.tab-dot')) { const dot = document.createElement('span'); dot.className = 'tab-dot'; tab.appendChild(dot); }
+  } else {
+    const dot = tab.querySelector('.tab-dot'); if (dot) dot.remove();
+  }
+
+  // Render morning state
+  if (m) {
+    el('morning-done-commit').textContent = m.commit || '(no commitment set)';
+    show('morning-done', true); show('morning-form', false); show('morning-begin-btn', false);
+  } else {
+    show('morning-done', false); show('morning-form', true); show('morning-begin-btn', true);
+  }
+
+  // Render shutdown state
   if (s) {
     el('shutdown-done-text').textContent = s.happened || 'Day closed.';
     el('shutdown-done-seed').textContent = s.seed ? '→ Tomorrow: ' + s.seed : '';
@@ -789,6 +996,26 @@ async function renderDay() {
     const ys = lsGet(LS_SHUTDOWN + '-' + yesterdayKey());
     const seedEl = el('sq-seed');
     if (ys && ys.seed && seedEl && !seedEl.value) seedEl.value = ys.seed;
+  }
+
+  // Place elements into slots based on time of day
+  const slotA = el('slot-a');
+  const slotB = el('slot-b');
+  slotA.innerHTML = ''; slotB.innerHTML = '';
+
+  const morningEls = [el('morning-done'), el('morning-form'), el('morning-begin-btn')];
+  const shutdownEls = [el('shutdown-done'), el('shutdown-form'), el('shutdown-close-btn')];
+
+  if (isMorning) {
+    // Morning first, shutdown second
+    el('day-sep-label').textContent = '🌙 close the day';
+    morningEls.forEach(e => slotA.appendChild(e));
+    shutdownEls.forEach(e => slotB.appendChild(e));
+  } else {
+    // Shutdown first, morning second
+    el('day-sep-label').textContent = '☀ morning check-in';
+    shutdownEls.forEach(e => slotA.appendChild(e));
+    morningEls.forEach(e => slotB.appendChild(e));
   }
 }
 
@@ -1062,6 +1289,151 @@ async function exportMd() {
   navigator.clipboard.writeText(md.trim())
     .then(() => showToast('Copied to clipboard'))
     .catch(() => prompt('Copy this:', md.trim()));
+}
+
+// ── Focus mode ────────────────────────────────────────────────
+let focusTask = null;
+let focusDuration = 5; // minutes
+let focusRemaining = 0;
+let focusInterval = null;
+let focusPaused = false;
+let focusDistractions = [];
+let focusStartedAt = null;
+
+function openFocus(t) {
+  focusTask = t;
+  focusDistractions = [];
+  focusPaused = false;
+  clearInterval(focusInterval);
+
+  // Reset to pick screen
+  el('focus-title').textContent = t.title;
+  el('focus-action').textContent = t.intention?.action ? '→ ' + t.intention.action : '';
+  el('focus-session-label').textContent = 'Focus session';
+  el('focus-log-entries').innerHTML = '';
+  el('focus-log-input').value = '';
+
+  // Reset duration buttons
+  document.querySelectorAll('.focus-dur-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelector('.focus-dur-btn').classList.add('selected');
+  focusDuration = 5;
+
+  show('focus-pick', true);
+  show('focus-running', false);
+  show('focus-done-screen', false);
+  el('focus-overlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFocus() {
+  clearInterval(focusInterval);
+  el('focus-overlay').classList.remove('active');
+  document.body.style.overflow = '';
+  focusTask = null;
+}
+
+function selectDur(btn, mins) {
+  document.querySelectorAll('.focus-dur-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  focusDuration = mins;
+}
+
+function startFocus() {
+  focusRemaining = focusDuration * 60;
+  focusStartedAt = new Date();
+  focusPaused = false;
+
+  el('focus-running-title').textContent = focusTask.title;
+  el('focus-running-action').textContent = focusTask.intention?.action ? '→ ' + focusTask.intention.action : '';
+  el('focus-session-label').textContent = focusDuration + 'm session';
+  el('focus-pause-btn').textContent = 'pause';
+
+  show('focus-pick', false);
+  show('focus-running', true);
+  show('focus-done-screen', false);
+
+  updateTimerDisplay();
+  focusInterval = setInterval(tickTimer, 1000);
+}
+
+function tickTimer() {
+  if (focusPaused) return;
+  focusRemaining--;
+  updateTimerDisplay();
+  if (focusRemaining <= 0) {
+    clearInterval(focusInterval);
+    sessionComplete();
+  }
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(focusRemaining / 60);
+  const s = focusRemaining % 60;
+  el('focus-timer').textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  const timerEl = el('focus-timer');
+  if (focusRemaining <= 0) timerEl.className = 'focus-timer done';
+  else if (focusRemaining <= 60) timerEl.className = 'focus-timer urgent';
+  else timerEl.className = 'focus-timer';
+}
+
+function togglePause() {
+  focusPaused = !focusPaused;
+  el('focus-pause-btn').textContent = focusPaused ? 'resume' : 'pause';
+}
+
+function endEarly() { clearInterval(focusInterval); sessionComplete(); }
+
+function sessionComplete() {
+  const elapsed = Math.round((new Date() - focusStartedAt) / 60000);
+  el('focus-done-sub').textContent = elapsed + ' min session · ' + focusDistractions.length + ' distraction' + (focusDistractions.length !== 1 ? 's' : '') + ' caught';
+
+  // Pre-fill note with distraction log if any
+  const ta = el('focus-note-ta');
+  ta.value = '';
+  if (focusDistractions.length) {
+    ta.value = 'Distractions caught:\n' + focusDistractions.map(d => '- ' + d).join('\n') + '\n\n';
+  }
+
+  show('focus-running', false);
+  show('focus-done-screen', true);
+
+  // Vibrate on mobile if supported
+  if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+}
+
+function logDistraction() {
+  const inp = el('focus-log-input');
+  const text = inp.value.trim(); if (!text) return;
+  focusDistractions.push(text);
+  inp.value = '';
+
+  const entry = document.createElement('div'); entry.className = 'focus-log-entry';
+  entry.textContent = '↗ ' + text;
+  el('focus-log-entries').appendChild(entry);
+  el('focus-log-entries').scrollTop = el('focus-log-entries').scrollHeight;
+}
+
+async function saveFocusSession() {
+  if (!focusTask) { closeFocus(); return; }
+  const noteText = el('focus-note-ta').value.trim();
+  const elapsed = Math.round((new Date() - focusStartedAt) / 60000);
+
+  let fullNote = '[' + elapsed + 'm focus';
+  if (focusDistractions.length) fullNote += ' · ' + focusDistractions.length + ' distractions caught';
+  fullNote += ']';
+  if (noteText) fullNote += '\n' + noteText;
+
+  const t = tasks.find(t => t.id === focusTask.id);
+  if (t) {
+    if (!t.notes) t.notes = [];
+    t.notes.push({ ts: new Date().toISOString(), text: fullNote });
+    lsSet(LS_TASKS, tasks);
+    render();
+    upsertTask(t);
+  }
+
+  closeFocus();
+  showToast('Session saved');
 }
 
 // ── Init ─────────────────────────────────────────────────────
