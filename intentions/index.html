@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Intentions</title>
-<link rel="manifest" href="/tasks/manifest.json">
+<link rel="manifest" href="/intentions/manifest.json">
 <meta name="theme-color" content="#111111">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%23111111'/><text y='340' x='256' text-anchor='middle' font-size='300'>⚓</text></svg>">
 <style>
@@ -1444,7 +1444,7 @@ loadTasks();
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/tasks/sw.js').catch(e => console.log('SW:', e));
+    navigator.serviceWorker.register('/intentions/sw.js').catch(e => console.log('SW:', e));
   });
 }
 </script>

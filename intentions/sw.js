@@ -1,8 +1,8 @@
-const CACHE = 'intentions-v1';
+const CACHE = 'intentions-v3';
 const SHELL = [
-  '/tasks/',
-  '/tasks/index.html',
-  '/tasks/manifest.json',
+  '/intentions/',
+  '/intentions/index.html',
+  '/intentions/manifest.json',
 ];
 
 // Install: cache the app shell
