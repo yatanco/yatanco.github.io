@@ -132,6 +132,10 @@ body { font-family:var(--sans); background:var(--bg); color:var(--text); min-hei
 
 /* Separator between morning and shutdown */
 .day-sep { display:flex; align-items:center; gap:12px; margin:2rem 0 1.25rem; }
+.day-sections { display:flex; flex-direction:column; }
+.day-sections.evening #day-morning-section  { order:2; }
+.day-sections.evening #day-sep              { order:1; }
+.day-sections.evening #day-shutdown-section { order:0; }
 .day-sep-line  { flex:1; height:1px; background:var(--border); }
 .day-sep-label { font-size:10px; font-family:var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; white-space:nowrap; }
 
@@ -387,82 +391,76 @@ body { font-family:var(--sans); background:var(--bg); color:var(--text); min-hei
   <!-- DAY VIEW -->
   <div class="view active" id="view-day">
     <div class="day-date" id="day-date"></div>
+    <div class="day-sections">
 
-    <!-- SLOT A: first section (morning in AM, shutdown in PM) -->
-    <div id="slot-a"></div>
-
-    <!-- Separator -->
-    <div class="day-sep">
-      <div class="day-sep-line"></div>
-      <div class="day-sep-label" id="day-sep-label"></div>
-      <div class="day-sep-line"></div>
-    </div>
-
-    <!-- SLOT B: second section -->
-    <div id="slot-b"></div>
-
-    <!-- Hidden pool — elements moved into slots by JS -->
-    <div id="day-pool" style="display:none">
-      <!-- Morning summary (after submit) -->
-      <div class="summary-card morning" id="morning-done">
-        <div class="summary-label">☀ Morning</div>
-        <div class="summary-text">Today I will</div>
-        <div class="summary-sub" id="morning-done-commit"></div>
-        <button class="redo-btn" onclick="redoMorning()">redo morning</button>
+      <!-- Morning -->
+      <div class="day-section" id="day-morning-section">
+        <div class="day-summary morning" id="morning-done" style="display:none">
+          <div class="summary-label">☀ Morning</div>
+          <div class="summary-text">Today I will</div>
+          <div class="summary-sub" id="morning-done-commit"></div>
+          <button class="redo-btn" onclick="redoMorning()">redo morning</button>
+        </div>
+        <div class="form-card morning" id="morning-form">
+          <div class="day-field">
+            <span class="day-field-label">What's actually true right now?</span>
+            <span class="day-field-hint">Not the anxiety version. The real one.</span>
+            <textarea class="day-field-ta" id="mq-reality" placeholder="Energy level, what's weighing on me, what's clear…" rows="2"></textarea>
+          </div>
+          <div class="day-field">
+            <span class="day-field-label">One thing that would move something meaningful forward</span>
+            <span class="day-field-hint">If nothing else happens, this is enough.</span>
+            <textarea class="day-field-ta" id="mq-one" placeholder="Be specific — not 'work on X', what exactly?" rows="2"></textarea>
+          </div>
+          <div class="day-field">
+            <span class="day-field-label">What am I avoiding, and is it costing me?</span>
+            <span class="day-field-hint">Naming it is enough for now.</span>
+            <textarea class="day-field-ta" id="mq-avoid" placeholder="Optional — skip if nothing comes up" rows="2"></textarea>
+          </div>
+          <div class="day-field">
+            <span class="day-field-label amber">Today's commitment</span>
+            <span class="day-field-prefix">Today I will</span>
+            <input class="day-field-input" id="mq-commit" type="text" placeholder="… by [time]">
+          </div>
+        </div>
+        <button class="day-action-btn morning" id="morning-begin-btn" onclick="saveMorning()">begin the day →</button>
       </div>
 
-      <!-- Morning form -->
-      <div class="form-card morning" id="morning-form">
-        <div class="day-field">
-          <span class="day-field-label">What's actually true right now?</span>
-          <span class="day-field-hint">Not the anxiety version. The real one.</span>
-          <textarea class="day-field-ta" id="mq-reality" placeholder="Energy level, what's weighing on me, what's clear…" rows="2"></textarea>
-        </div>
-        <div class="day-field">
-          <span class="day-field-label">One thing that would move something meaningful forward</span>
-          <span class="day-field-hint">If nothing else happens, this is enough.</span>
-          <textarea class="day-field-ta" id="mq-one" placeholder="Be specific — not 'work on X', what exactly?" rows="2"></textarea>
-        </div>
-        <div class="day-field">
-          <span class="day-field-label">What am I avoiding, and is it costing me?</span>
-          <span class="day-field-hint">Naming it is enough for now.</span>
-          <textarea class="day-field-ta" id="mq-avoid" placeholder="Optional — skip if nothing comes up" rows="2"></textarea>
-        </div>
-        <div class="day-field">
-          <span class="day-field-label amber">Today's commitment</span>
-          <span class="day-field-prefix">Today I will</span>
-          <input class="day-field-input" id="mq-commit" type="text" placeholder="… by [time]">
-        </div>
-      </div>
-      <button class="day-action-btn morning" id="morning-begin-btn" onclick="saveMorning()">begin the day →</button>
-
-      <!-- Shutdown summary (after submit) -->
-      <div class="summary-card shutdown" id="shutdown-done">
-        <div class="summary-label">🌙 Shutdown</div>
-        <div class="summary-text" id="shutdown-done-text"></div>
-        <div class="summary-sub"  id="shutdown-done-seed"></div>
-        <button class="redo-btn" onclick="redoShutdown()">redo shutdown</button>
+      <!-- Separator -->
+      <div class="day-sep" id="day-sep">
+        <div class="day-sep-line"></div>
+        <div class="day-sep-label" id="day-sep-label">🌙 close the day</div>
+        <div class="day-sep-line"></div>
       </div>
 
-      <!-- Shutdown form -->
-      <div class="form-card shutdown" id="shutdown-form">
-        <div class="day-field">
-          <span class="day-field-label">What actually happened today?</span>
-          <span class="day-field-hint">Honest, not curated.</span>
-          <textarea class="day-field-ta" id="sq-happened" placeholder="What got done, what didn't, what surprised me…" rows="2"></textarea>
+      <!-- Shutdown -->
+      <div class="day-section" id="day-shutdown-section">
+        <div class="day-summary shutdown" id="shutdown-done" style="display:none">
+          <div class="summary-label">🌙 Shutdown</div>
+          <div class="summary-text" id="shutdown-done-text"></div>
+          <div class="summary-sub"  id="shutdown-done-seed"></div>
+          <button class="redo-btn" onclick="redoShutdown()">redo shutdown</button>
         </div>
-        <div class="day-field">
-          <span class="day-field-label">What am I avoiding that I need to name before I close?</span>
-          <span class="day-field-hint">Optional — set it down so you can stop carrying it.</span>
-          <textarea class="day-field-ta" id="sq-avoiding" placeholder="Something unresolved, unspoken, or sitting in my chest…" rows="2"></textarea>
+        <div class="form-card shutdown" id="shutdown-form">
+          <div class="day-field">
+            <span class="day-field-label">What actually happened today?</span>
+            <span class="day-field-hint">Honest, not curated.</span>
+            <textarea class="day-field-ta" id="sq-happened" placeholder="What got done, what didn't, what surprised me…" rows="2"></textarea>
+          </div>
+          <div class="day-field">
+            <span class="day-field-label">What am I avoiding that I need to name before I close?</span>
+            <span class="day-field-hint">Optional — set it down so you can stop carrying it.</span>
+            <textarea class="day-field-ta" id="sq-avoiding" placeholder="Something unresolved, unspoken, or sitting in my chest…" rows="2"></textarea>
+          </div>
+          <div class="day-field">
+            <span class="day-field-label blue">Tomorrow</span>
+            <span class="day-field-prefix">First thing tomorrow I will</span>
+            <input class="day-field-input" id="sq-seed" type="text" placeholder="one small specific thing">
+          </div>
         </div>
-        <div class="day-field">
-          <span class="day-field-label blue">Tomorrow</span>
-          <span class="day-field-prefix">First thing tomorrow I will</span>
-          <input class="day-field-input" id="sq-seed" type="text" placeholder="one small specific thing">
-        </div>
+        <button class="day-action-btn shutdown" id="shutdown-close-btn" onclick="saveShutdown()">close the day →</button>
       </div>
-      <button class="day-action-btn shutdown" id="shutdown-close-btn" onclick="saveShutdown()">close the day →</button>
+
     </div>
   </div>
 
@@ -494,7 +492,7 @@ body { font-family:var(--sans); background:var(--bg); color:var(--text); min-hei
   </div>
 </div>
 <div class="toast" id="toast"></div>
-<div style="text-align:center;padding:2rem 0 1rem;font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:0.06em;">v1.01 · July 10, 2026</div>
+<div style="text-align:center;padding:2rem 0 1rem;font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:0.06em;">v1.02 · July 10, 2026</div>
 
 <!-- FOCUS MODE OVERLAY -->
 <div class="focus-overlay" id="focus-overlay">
@@ -953,7 +951,10 @@ function renderToday() {
 async function renderDay() {
   el('day-date').textContent = new Date().toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase();
 
-  const isMorning = new Date().getHours() < 14; // before 2pm = morning mode
+  const isMorning = new Date().getHours() < 14;
+  const sections = el('day-date').parentElement.querySelector('.day-sections');
+  if (sections) sections.className = 'day-sections' + (isMorning ? '' : ' evening');
+  el('day-sep-label').textContent = isMorning ? '🌙 close the day' : '☀ morning check-in';
 
   // Morning — try Supabase, fall back to localStorage
   let m = null;
@@ -979,7 +980,7 @@ async function renderDay() {
     const dot = tab.querySelector('.tab-dot'); if (dot) dot.remove();
   }
 
-  // Render morning state
+  // Morning state
   if (m) {
     el('morning-done-commit').textContent = m.commit || '(no commitment set)';
     show('morning-done', true); show('morning-form', false); show('morning-begin-btn', false);
@@ -987,7 +988,7 @@ async function renderDay() {
     show('morning-done', false); show('morning-form', true); show('morning-begin-btn', true);
   }
 
-  // Render shutdown state
+  // Shutdown state
   if (s) {
     el('shutdown-done-text').textContent = s.happened || 'Day closed.';
     el('shutdown-done-seed').textContent = s.seed ? '→ Tomorrow: ' + s.seed : '';
@@ -997,26 +998,6 @@ async function renderDay() {
     const ys = lsGet(LS_SHUTDOWN + '-' + yesterdayKey());
     const seedEl = el('sq-seed');
     if (ys && ys.seed && seedEl && !seedEl.value) seedEl.value = ys.seed;
-  }
-
-  // Place elements into slots based on time of day
-  const slotA = el('slot-a');
-  const slotB = el('slot-b');
-  slotA.innerHTML = ''; slotB.innerHTML = '';
-
-  const morningEls = [el('morning-done'), el('morning-form'), el('morning-begin-btn')];
-  const shutdownEls = [el('shutdown-done'), el('shutdown-form'), el('shutdown-close-btn')];
-
-  if (isMorning) {
-    // Morning first, shutdown second
-    el('day-sep-label').textContent = '🌙 close the day';
-    morningEls.forEach(e => slotA.appendChild(e));
-    shutdownEls.forEach(e => slotB.appendChild(e));
-  } else {
-    // Shutdown first, morning second
-    el('day-sep-label').textContent = '☀ morning check-in';
-    shutdownEls.forEach(e => slotA.appendChild(e));
-    morningEls.forEach(e => slotB.appendChild(e));
   }
 }
 

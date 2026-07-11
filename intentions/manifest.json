@@ -2,14 +2,14 @@
   "name": "Intentions",
   "short_name": "Intentions",
   "description": "Task capture with implementation intentions",
-  "start_url": "/tasks/",
+  "start_url": "/intentions/",
   "display": "standalone",
-  "background_color": "#0f0f0f",
-  "theme_color": "#0f0f0f",
+  "background_color": "#111111",
+  "theme_color": "#111111",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%230f0f0f'/><text y='340' x='256' text-anchor='middle' font-size='300' font-family='serif'>⚓</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%23111111'/><text y='340' x='256' text-anchor='middle' font-size='300' font-family='serif'>⚓</text></svg>",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
