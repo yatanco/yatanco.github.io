@@ -377,7 +377,6 @@ body { font-family:var(--sans); background:var(--bg); color:var(--text); min-hei
     <span class="app-title">&#9875; intentions</span>
     <div class="header-right">
       <div class="sync-dot" id="sync-dot"></div>
-      <button class="hdr-btn" onclick="exportMd()">copy as markdown</button>
     </div>
   </div>
 
@@ -466,6 +465,9 @@ body { font-family:var(--sans); background:var(--bg); color:var(--text); min-hei
 
   <!-- TASKS VIEW -->
   <div class="view" id="view-tasks">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:0.75rem;">
+      <button class="log-export-btn" onclick="exportMd()">copy as markdown</button>
+    </div>
     <div class="add-row">
       <input id="new-task" class="add-input" type="text" placeholder="Add a task…" autocomplete="off" onkeydown="if(event.key==='Enter')addTask()">
       <button class="add-btn" onclick="addTask()">Add</button>
@@ -492,7 +494,7 @@ body { font-family:var(--sans); background:var(--bg); color:var(--text); min-hei
   </div>
 </div>
 <div class="toast" id="toast"></div>
-<div style="text-align:center;padding:2rem 0 1rem;font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:0.06em;">v1.02 · July 10, 2026</div>
+<div style="text-align:center;padding:2rem 0 1rem;font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:0.06em;">v1.03 · July 10, 2026</div>
 
 <!-- FOCUS MODE OVERLAY -->
 <div class="focus-overlay" id="focus-overlay">
