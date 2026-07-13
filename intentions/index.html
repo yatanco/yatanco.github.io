@@ -364,6 +364,16 @@ body { font-family:var(--sans); background:var(--bg); color:var(--text); min-hei
 .log-task-meta  { font-size:10px; font-family:var(--mono); color:var(--muted); margin-top:3px; opacity:0.6; }
 .log-task-note  { font-size:12px; color:var(--text2); margin-top:6px; font-style:italic; line-height:1.4; border-left:2px solid var(--border2); padding-left:8px; }
 
+/* Post-session outcome */
+.focus-outcome-wrap  { width:100%; max-width:420px; text-align:left; margin-bottom:1rem; }
+.focus-outcome-label { font-size:10px; font-family:var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px; display:block; }
+.focus-outcome-btns  { display:flex; gap:8px; }
+.focus-outcome-btn   { flex:1; height:38px; border-radius:var(--radius); font-size:12px; font-family:var(--mono); cursor:pointer; border:1px solid var(--border2); background:var(--surface2); color:var(--text2); transition:all 0.15s; letter-spacing:0.03em; }
+.focus-outcome-btn:hover { border-color:var(--muted); color:var(--text); }
+.focus-outcome-btn.selected.done    { background:var(--frog-dim);  border-color:var(--frog);  color:var(--frog); }
+.focus-outcome-btn.selected.partial { background:var(--amber-dim); border-color:var(--amber); color:var(--amber); }
+.focus-outcome-btn.selected.more    { background:var(--blue-dim);  border-color:var(--blue);  color:var(--blue); }
+
 /* ── Toast ── */
 .toast { position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%); background:var(--surface3); border:1px solid var(--border2); border-radius:var(--radius); padding:9px 18px; font-size:13px; font-family:var(--mono); color:var(--text); opacity:0; transition:opacity 0.2s; pointer-events:none; white-space:nowrap; z-index:100; }
 .toast.show { opacity:1; }
@@ -383,7 +393,6 @@ body { font-family:var(--sans); background:var(--bg); color:var(--text); min-hei
   <div class="tabs">
     <button class="tab day-tab active" id="tab-day"   onclick="switchTab('day',this)">day</button>
     <button class="tab"               id="tab-tasks"  onclick="switchTab('tasks',this)">tasks</button>
-    <button class="tab"               id="tab-today"  onclick="switchTab('today',this)">today</button>
     <button class="tab"               id="tab-log"    onclick="switchTab('log',this)">log</button>
   </div>
 
@@ -409,6 +418,7 @@ body { font-family:var(--sans); background:var(--bg); color:var(--text); min-hei
           <div class="day-field">
             <span class="day-field-label">One thing that would move something meaningful forward</span>
             <span class="day-field-hint">If nothing else happens, this is enough.</span>
+            <div id="morning-frog-hint" style="display:none;font-size:11px;font-family:var(--mono);color:var(--frog);padding:6px 14px 0;"></div>
             <textarea class="day-field-ta" id="mq-one" placeholder="Be specific — not 'work on X', what exactly?" rows="2"></textarea>
           </div>
           <div class="day-field">
@@ -419,7 +429,7 @@ body { font-family:var(--sans); background:var(--bg); color:var(--text); min-hei
           <div class="day-field">
             <span class="day-field-label amber">Today's commitment</span>
             <span class="day-field-prefix">Today I will</span>
-            <input class="day-field-input" id="mq-commit" type="text" placeholder="… by [time]">
+            <input class="day-field-input" id="mq-commit" type="text" placeholder="specific thing by specific time">
           </div>
         </div>
         <button class="day-action-btn morning" id="morning-begin-btn" onclick="saveMorning()">begin the day →</button>
@@ -444,12 +454,12 @@ body { font-family:var(--sans); background:var(--bg); color:var(--text); min-hei
           <div class="day-field">
             <span class="day-field-label">What actually happened today?</span>
             <span class="day-field-hint">Honest, not curated.</span>
-            <textarea class="day-field-ta" id="sq-happened" placeholder="What got done, what didn't, what surprised me…" rows="2"></textarea>
+            <textarea class="day-field-ta" id="sq-happened" placeholder="What got done, what didn't, what surprised me…" rows="4"></textarea>
           </div>
           <div class="day-field">
             <span class="day-field-label">What am I avoiding that I need to name before I close?</span>
             <span class="day-field-hint">Optional — set it down so you can stop carrying it.</span>
-            <textarea class="day-field-ta" id="sq-avoiding" placeholder="Something unresolved, unspoken, or sitting in my chest…" rows="2"></textarea>
+            <textarea class="day-field-ta" id="sq-avoiding" placeholder="Something unresolved, unspoken, or sitting in my chest…" rows="3"></textarea>
           </div>
           <div class="day-field">
             <span class="day-field-label blue">Tomorrow</span>
@@ -478,11 +488,6 @@ body { font-family:var(--sans); background:var(--bg); color:var(--text); min-hei
     <div id="completed-section"></div>
   </div>
 
-  <!-- TODAY / TIMEBLOCK VIEW -->
-  <div class="view" id="view-today">
-    <div id="tb-content"></div>
-  </div>
-
   <!-- LOG VIEW -->
   <div class="view" id="view-log">
     <div class="log-header">
@@ -494,7 +499,7 @@ body { font-family:var(--sans); background:var(--bg); color:var(--text); min-hei
   </div>
 </div>
 <div class="toast" id="toast"></div>
-<div style="text-align:center;padding:2rem 0 1rem;font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:0.06em;">v1.03 · July 10, 2026</div>
+<div style="text-align:center;padding:2rem 0 1rem;font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:0.06em;">v1.05 · July 13, 2026</div>
 
 <!-- FOCUS MODE OVERLAY -->
 <div class="focus-overlay" id="focus-overlay">
@@ -527,28 +532,40 @@ body { font-family:var(--sans); background:var(--bg); color:var(--text); min-hei
       <button class="focus-ctrl-btn secondary" onclick="endEarly()">done early</button>
     </div>
     <div class="focus-log-wrap">
-      <span class="focus-log-label">Distraction log</span>
-      <span class="focus-log-hint">Feel the urge to switch? Type it here instead of doing it.</span>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <span class="focus-log-label" style="margin-bottom:0">Distraction log</span>
+        <span class="focus-log-counter" id="focus-log-counter" style="display:none;font-size:10px;font-family:var(--mono);color:var(--frog);letter-spacing:0.06em;"></span>
+      </div>
+      <span class="focus-log-hint">Feel the urge? Type it here instead of doing it.</span>
       <div class="focus-log-entries" id="focus-log-entries"></div>
       <div class="focus-log-input-row">
         <input class="focus-log-input" id="focus-log-input" type="text"
           placeholder="I want to check…"
           onkeydown="if(event.key==='Enter')logDistraction()">
-        <button class="focus-log-add" onclick="logDistraction()">log it</button>
+        <button class="focus-log-add" id="focus-log-add-btn" onclick="logDistraction()">resisted ✓</button>
       </div>
     </div>
   </div>
 
   <!-- Post-session screen -->
   <div class="focus-done-screen" id="focus-done-screen" style="display:none">
-    <div class="focus-done-title">Session done ✓</div>
+    <div class="focus-done-title" id="focus-done-title">Session done ✓</div>
     <div class="focus-done-sub" id="focus-done-sub"></div>
-    <div class="focus-note-wrap">
-      <span class="focus-note-label">What happened in that session?</span>
-      <textarea class="focus-note-ta" id="focus-note-ta"
-        placeholder="What did you get done? What came up? How did it feel?"></textarea>
+    <div class="focus-done-sub" id="focus-done-distractions" style="margin-top:6px;font-style:italic;max-width:360px;text-align:center;line-height:1.5;"></div>
+    <div class="focus-outcome-wrap">
+      <div class="focus-outcome-label">How did it go?</div>
+      <div class="focus-outcome-btns">
+        <button class="focus-outcome-btn done" onclick="selectOutcome('done')">done ✓</button>
+        <button class="focus-outcome-btn partial" onclick="selectOutcome('partial')">partial</button>
+        <button class="focus-outcome-btn more" onclick="selectOutcome('more')">need more time</button>
+      </div>
     </div>
-    <button class="focus-save-btn" onclick="saveFocusSession()">save & close</button>
+    <div class="focus-note-wrap" id="focus-note-section">
+      <span class="focus-note-label">Notes (optional)</span>
+      <textarea class="focus-note-ta" id="focus-note-ta"
+        placeholder="What got done? What came up? How did it feel?"></textarea>
+    </div>
+    <button class="focus-save-btn" id="focus-save-btn" onclick="saveFocusSession()">save & close</button>
   </div>
 </div>
 
@@ -807,10 +824,26 @@ function makeCard(t) {
   main.appendChild(check);
 
   const body = document.createElement('div'); body.className = 'task-body';
-  const titleEl = document.createElement('div'); titleEl.className = 'task-title'; titleEl.textContent = t.title;
-  body.appendChild(titleEl);
 
-  if (!t.done) {
+  // Title row with inline frog indicator and focus button
+  const titleRow = document.createElement('div'); titleRow.style.cssText = 'display:flex;align-items:center;gap:6px;';
+  const titleEl = document.createElement('div'); titleEl.className = 'task-title';
+  titleEl.textContent = (t.frog && !t.done && !t.expanded ? '🐸 ' : '') + t.title;
+  titleRow.appendChild(titleEl);
+
+  // Focus button visible on collapsed card when not done
+  if (!t.done && !t.expanded) {
+    const quickFoc = document.createElement('button');
+    quickFoc.textContent = '▶';
+    quickFoc.style.cssText = 'font-size:10px;color:var(--accent);background:none;border:none;cursor:pointer;padding:2px 4px;flex-shrink:0;opacity:0.6;';
+    quickFoc.onclick = e => { e.stopPropagation(); openFocus(t); };
+    quickFoc.title = 'Focus session';
+    titleRow.appendChild(quickFoc);
+  }
+  body.appendChild(titleRow);
+
+  // Chips only when expanded
+  if (!t.done && t.expanded) {
     const chips = document.createElement('div'); chips.className = 'task-chips';
     const mkChip = (label, cls, handler) => {
       const c = document.createElement('button'); c.className = 'chip' + (cls ? ' ' + cls : '');
@@ -988,6 +1021,32 @@ async function renderDay() {
     show('morning-done', true); show('morning-form', false); show('morning-begin-btn', false);
   } else {
     show('morning-done', false); show('morning-form', true); show('morning-begin-btn', true);
+    // Restore draft if exists
+    const draft = lsGet('intentions-morning-draft');
+    if (draft) {
+      ['reality','one','avoid','commit'].forEach(f => { const e = el('mq-'+f); if (e && !e.value && draft[f]) e.value = draft[f]; });
+    }
+    // Wire autosave on all morning fields
+    ['mq-reality','mq-one','mq-avoid','mq-commit'].forEach(id => {
+      const e = el(id); if (!e || e._autosave) return; e._autosave = true;
+      e.addEventListener('input', () => {
+        lsSet('intentions-morning-draft', {
+          reality: el('mq-reality').value,
+          one: el('mq-one').value,
+          avoid: el('mq-avoid').value,
+          commit: el('mq-commit').value
+        });
+      });
+    });
+    // Show frog hint
+    const frog = tasks.find(t => t.frog && !t.done);
+    const hintEl = el('morning-frog-hint');
+    if (frog && hintEl) {
+      hintEl.textContent = '🐸 Current frog: ' + frog.title + ' — still the right one?';
+      hintEl.style.display = 'block';
+    } else if (hintEl) {
+      hintEl.style.display = 'none';
+    }
   }
 
   // Shutdown state
@@ -997,6 +1056,22 @@ async function renderDay() {
     show('shutdown-done', true); show('shutdown-form', false); show('shutdown-close-btn', false);
   } else {
     show('shutdown-done', false); show('shutdown-form', true); show('shutdown-close-btn', true);
+    // Restore shutdown draft
+    const sdraft = lsGet('intentions-shutdown-draft-' + todayKey());
+    if (sdraft) {
+      ['happened','avoiding','seed'].forEach(f => { const e = el('sq-'+f); if (e && !e.value && sdraft[f]) e.value = sdraft[f]; });
+    }
+    // Wire autosave on shutdown fields
+    ['sq-happened','sq-avoiding','sq-seed'].forEach(id => {
+      const e = el(id); if (!e || e._autosave) return; e._autosave = true;
+      e.addEventListener('input', () => {
+        lsSet('intentions-shutdown-draft-' + todayKey(), {
+          happened: el('sq-happened').value,
+          avoiding: el('sq-avoiding').value,
+          seed: el('sq-seed').value
+        });
+      });
+    });
     const ys = lsGet(LS_SHUTDOWN + '-' + yesterdayKey());
     const seedEl = el('sq-seed');
     if (ys && ys.seed && seedEl && !seedEl.value) seedEl.value = ys.seed;
@@ -1015,6 +1090,17 @@ async function saveMorning() {
   if (!entry.one && !entry.commit) { showToast('Fill in at least one field to begin'); return; }
   lsSet(LS_MORNING + '-' + todayKey(), entry);
   try { await sbPost('morning_checkin', entry); } catch {}
+
+  // Reset frog intention fields so today's frog gets re-planned fresh
+  const frog = tasks.find(t => t.frog && !t.done);
+  if (frog) {
+    frog.intention = { ...frog.intention, action: '', when: '', where: '', obstacle: '', backup: '' };
+    updateCache(); upsertTask(frog);
+  }
+
+  // Clear draft
+  localStorage.removeItem('intentions-morning-draft');
+
   renderDay();
   setTimeout(() => switchTab('tasks', el('tab-tasks')), 500);
 }
@@ -1037,6 +1123,7 @@ async function saveShutdown() {
   if (!entry.happened && !entry.seed) { showToast('Add at least one field to close the day'); return; }
   lsSet(LS_SHUTDOWN + '-' + todayKey(), entry);
   try { await sbPost('shutdown', entry); } catch {}
+  localStorage.removeItem('intentions-shutdown-draft-' + todayKey());
   logCache = null;
   renderDay();
 }
@@ -1367,43 +1454,97 @@ function togglePause() {
 
 function endEarly() { clearInterval(focusInterval); sessionComplete(); }
 
-function sessionComplete() {
-  const elapsed = Math.round((new Date() - focusStartedAt) / 60000);
-  el('focus-done-sub').textContent = elapsed + ' min session · ' + focusDistractions.length + ' distraction' + (focusDistractions.length !== 1 ? 's' : '') + ' caught';
-
-  // Pre-fill note with distraction log if any
-  const ta = el('focus-note-ta');
-  ta.value = '';
-  if (focusDistractions.length) {
-    ta.value = 'Distractions caught:\n' + focusDistractions.map(d => '- ' + d).join('\n') + '\n\n';
-  }
-
-  show('focus-running', false);
-  show('focus-done-screen', true);
-
-  // Vibrate on mobile if supported
-  if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-}
-
 function logDistraction() {
   const inp = el('focus-log-input');
   const text = inp.value.trim(); if (!text) return;
   focusDistractions.push(text);
   inp.value = '';
 
+  // Add entry to feed
   const entry = document.createElement('div'); entry.className = 'focus-log-entry';
-  entry.textContent = '↗ ' + text;
+  entry.textContent = '✓ ' + text;
   el('focus-log-entries').appendChild(entry);
   el('focus-log-entries').scrollTop = el('focus-log-entries').scrollHeight;
+
+  // Update live counter
+  const count = focusDistractions.length;
+  const counter = el('focus-log-counter');
+  counter.textContent = count + ' resisted';
+  counter.style.display = 'inline';
+
+  // Flash button to confirm
+  const btn = el('focus-log-add-btn');
+  btn.style.background = 'var(--frog)';
+  btn.style.color = '#fff';
+  btn.style.borderColor = 'var(--frog)';
+  setTimeout(() => {
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.style.borderColor = '';
+  }, 350);
+}
+
+let focusOutcome = null;
+
+function selectOutcome(outcome) {
+  focusOutcome = outcome;
+  document.querySelectorAll('.focus-outcome-btn').forEach(b => b.classList.remove('selected'));
+  const btn = document.querySelector('.focus-outcome-btn.' + outcome);
+  if (btn) btn.classList.add('selected');
+
+  // If "need more time" — offer a new 5m block
+  if (outcome === 'more') {
+    el('focus-save-btn').textContent = 'save & start another 5m';
+  } else {
+    el('focus-save-btn').textContent = 'save & close';
+  }
+}
+
+function sessionComplete() {
+  const elapsed = Math.round((new Date() - focusStartedAt) / 60000);
+  focusOutcome = null;
+
+  // Title
+  el('focus-done-title').textContent = 'Session done ✓';
+
+  // Sub: time + urges
+  el('focus-done-sub').textContent = elapsed + 'm · ' + (focusDistractions.length > 0
+    ? focusDistractions.length + ' urge' + (focusDistractions.length !== 1 ? 's' : '') + ' resisted'
+    : 'no distractions logged');
+
+  // Distraction recap
+  const recapEl = el('focus-done-distractions');
+  if (focusDistractions.length > 0) {
+    recapEl.textContent = 'You resisted: ' + focusDistractions.join(', ');
+    recapEl.style.display = 'block';
+  } else {
+    recapEl.style.display = 'none';
+  }
+
+  // Pre-fill note
+  const ta = el('focus-note-ta');
+  ta.value = focusDistractions.length
+    ? 'Urges resisted:\n' + focusDistractions.map(d => '- ' + d).join('\n') + '\n\n'
+    : '';
+
+  // Reset outcome buttons
+  document.querySelectorAll('.focus-outcome-btn').forEach(b => b.classList.remove('selected'));
+  el('focus-save-btn').textContent = 'save & close';
+
+  show('focus-running', false);
+  show('focus-done-screen', true);
+
+  if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
 }
 
 async function saveFocusSession() {
   if (!focusTask) { closeFocus(); return; }
   const noteText = el('focus-note-ta').value.trim();
   const elapsed = Math.round((new Date() - focusStartedAt) / 60000);
+  const outcome = focusOutcome || 'partial';
 
-  let fullNote = '[' + elapsed + 'm focus';
-  if (focusDistractions.length) fullNote += ' · ' + focusDistractions.length + ' distractions caught';
+  let fullNote = '[' + elapsed + 'm · ' + outcome;
+  if (focusDistractions.length) fullNote += ' · ' + focusDistractions.length + ' urges resisted';
   fullNote += ']';
   if (noteText) fullNote += '\n' + noteText;
 
@@ -1414,6 +1555,20 @@ async function saveFocusSession() {
     lsSet(LS_TASKS, tasks);
     render();
     upsertTask(t);
+  }
+
+  // If "need more time" — start a fresh 5m session
+  if (focusOutcome === 'more') {
+    const taskCopy = { ...focusTask };
+    closeFocus();
+    setTimeout(() => {
+      openFocus(taskCopy);
+      setTimeout(() => {
+        selectDur(document.querySelector('.focus-dur-btn'), 5);
+        startFocus();
+      }, 100);
+    }, 100);
+    return;
   }
 
   closeFocus();
