@@ -1,0 +1,109 @@
+---
+import Shell from '../layouts/Shell.astro';
+
+const now = [
+  { text: 'Operations Steward at', link: 'https://cerebrumdao.com', label: 'CerebrumDAO', suffix: '— a biotech funding and building engine focused on solving neurodegeneration' },
+  { text: 'Building products at', link: 'https://guacamayalab.com', label: 'Guacamaya Lab', suffix: '— practical software, built from problems I run into myself' },
+  { text: 'Supporting founders through', link: 'https://fi.co', label: 'Founder Institute', suffix: '' },
+  { text: 'Certified Search Inside Yourself teacher', link: null, label: '', suffix: '— mindfulness and emotional intelligence for teams' },
+];
+
+const previously = [
+  { label: 'CoLab Lead', org: 'RnDAO', link: 'https://rndao.io', suffix: '— pushing CollabTech and Web3 organisational design forward' },
+  { label: 'Venture Partner', org: 'Infinita VC', link: 'https://infinitavc.com', suffix: '— sourcing startups and doing due diligence in Latin America' },
+  { label: 'COO', org: 'BetahausX', link: 'https://betahausx.com', suffix: '— built and ran accelerators for Deutsche Bahn, Volkswagen, Siemens, Samsung and others' },
+  { label: 'Co-founder', org: 'Hardware.co', link: 'https://hardware.co', suffix: "— Europe's first hardware accelerator" },
+  { label: 'Country Manager', org: 'La Ruche Qui Dit Oui', link: 'https://laruchequiditoui.fr', suffix: 'in Germany and Spain — built a community of 900 farmers and 50 consumer groups' },
+];
+---
+<Shell title="Yatan Blumenthal Vargas">
+  <section class="intro">
+    <h1>Yatan Blumenthal Vargas</h1>
+    <p>
+      I've spent the past 15 years working at the intersection of science, startups,
+      and human systems — building accelerators, coaching founders, and facilitating
+      teams across Europe, Africa, and Latin America. My current focus is brain health
+      and ending neurodegeneration.
+    </p>
+    <p><a href="/es">🇨🇴 En español</a></p>
+  </section>
+
+  <hr />
+
+  <section>
+    <p class="eyebrow">Now</p>
+    <ul class="status-list">
+      {now.map((item) => (
+        <li>
+          {item.text}{' '}
+          {item.link ? <a href={item.link}>{item.label}</a> : item.label}
+          {item.suffix && <span class="dim"> {item.suffix}</span>}
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <hr />
+
+  <section>
+    <p class="eyebrow">Previously</p>
+    <ul class="status-list">
+      {previously.map((item) => (
+        <li>
+          {item.label} at <a href={item.link}>{item.org}</a>
+          <span class="dim"> {item.suffix}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <hr />
+
+  <section>
+    <p class="eyebrow">Writing</p>
+    <p>
+      Essays and unfinished thoughts at <a href="/writing">/writing</a> —
+      on operating a portfolio of ventures, brain health, DeSci, and what
+      I'm learning as I go.
+    </p>
+  </section>
+</Shell>
+
+<style>
+  .intro h1 {
+    font-size: 1.75rem;
+    margin: 0 0 1.25rem;
+  }
+  .intro p {
+    line-height: 1.7;
+    color: var(--text-primary);
+  }
+
+  .eyebrow {
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mint);
+    margin: 0 0 1rem;
+  }
+
+  .status-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .status-list li {
+    position: relative;
+    padding-left: 1.25rem;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+  .status-list li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--mint);
+  }
+
+  .dim { color: var(--text-dim); }
+</style>

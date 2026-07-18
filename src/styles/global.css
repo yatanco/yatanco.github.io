@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap');
+
+:root {
+  /* Shell (operator) tokens — used site-wide for nav/chrome */
+  --bg: #0a0a0a;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --mint: #6ee7b7;
+  --text-primary: #f2f2f0;
+  --text-dim: #8a8a86;
+  --rule: #232323;
+
+  /* Reading layer tokens — used only inside /writing content */
+  --serif: 'Source Serif 4', Georgia, serif;
+  --read-bg: #0a0a0a;
+  --read-text: #e6e4df;
+  --read-text-dim: #a3a19c;
+  --read-accent: #6ee7b7;
+  --read-max-width: 68ch;
+  --read-line-height: 1.75;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text-primary);
+}
+
+body {
+  font-family: var(--mono);
+}
+
+a { color: var(--mint); text-decoration: none; }
+a:hover { text-decoration: underline; }
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--mint);
+  outline-offset: 2px;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 2.5rem 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+@media (max-width: 700px) {
+  body { font-size: 15px; }
+}

@@ -1,0 +1,109 @@
+---
+import Shell from '../../layouts/Shell.astro';
+
+const now = [
+  { text: 'Operations Steward en', link: 'https://cerebrumdao.com', label: 'CerebrumDAO', suffix: '— un motor de financiación y construcción en biotecnología enfocado en resolver la neurodegeneración' },
+  { text: 'Construyendo productos en', link: 'https://guacamayalab.com', label: 'Guacamaya Lab', suffix: '— software práctico, construido a partir de problemas que yo mismo enfrento' },
+  { text: 'Apoyando fundadores a través de', link: 'https://fi.co', label: 'Founder Institute', suffix: '' },
+  { text: 'Profesor certificado de Search Inside Yourself', link: null, label: '', suffix: '— mindfulness e inteligencia emocional para equipos' },
+];
+
+const previously = [
+  { label: 'CoLab Lead', org: 'RnDAO', link: 'https://rndao.io', suffix: '— impulsando CollabTech y el diseño organizacional en Web3' },
+  { label: 'Venture Partner', org: 'Infinita VC', link: 'https://infinitavc.com', suffix: '— identificando startups y haciendo due diligence en América Latina' },
+  { label: 'COO', org: 'BetahausX', link: 'https://betahausx.com', suffix: '— construí y dirigí aceleradoras para Deutsche Bahn, Volkswagen, Siemens, Samsung y otros' },
+  { label: 'Co-fundador', org: 'Hardware.co', link: 'https://hardware.co', suffix: '— la primera aceleradora de hardware de Europa' },
+  { label: 'Country Manager', org: 'La Ruche Qui Dit Oui', link: 'https://laruchequiditoui.fr', suffix: 'en Alemania y España — construí una comunidad de 900 productores y 50 grupos de consumidores' },
+];
+---
+<Shell title="Yatan Blumenthal Vargas" description="Salud cerebral, ciencia descentralizada y sistemas humanos.">
+  <section class="intro">
+    <h1>Yatan Blumenthal Vargas</h1>
+    <p>
+      He pasado los últimos 15 años trabajando en la intersección entre ciencia, startups
+      y sistemas humanos — construyendo aceleradoras, acompañando fundadores y facilitando
+      equipos en Europa, África y América Latina. Mi enfoque actual es la salud cerebral
+      y el fin de las enfermedades neurodegenerativas.
+    </p>
+    <p><a href="/">🇬🇧 In English</a></p>
+  </section>
+
+  <hr />
+
+  <section>
+    <p class="eyebrow">Ahora</p>
+    <ul class="status-list">
+      {now.map((item) => (
+        <li>
+          {item.text}{' '}
+          {item.link ? <a href={item.link}>{item.label}</a> : item.label}
+          {item.suffix && <span class="dim"> {item.suffix}</span>}
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <hr />
+
+  <section>
+    <p class="eyebrow">Antes</p>
+    <ul class="status-list">
+      {previously.map((item) => (
+        <li>
+          {item.label} en <a href={item.link}>{item.org}</a>
+          <span class="dim"> {item.suffix}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <hr />
+
+  <section>
+    <p class="eyebrow">Escritura</p>
+    <p>
+      Ensayos y reflexiones sin terminar en <a href="/writing">/writing</a> —
+      sobre operar un portafolio de proyectos, salud cerebral, DeSci, y lo que
+      voy aprendiendo en el camino.
+    </p>
+  </section>
+</Shell>
+
+<style>
+  .intro h1 {
+    font-size: 1.75rem;
+    margin: 0 0 1.25rem;
+  }
+  .intro p {
+    line-height: 1.7;
+    color: var(--text-primary);
+  }
+
+  .eyebrow {
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mint);
+    margin: 0 0 1rem;
+  }
+
+  .status-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .status-list li {
+    position: relative;
+    padding-left: 1.25rem;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+  .status-list li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--mint);
+  }
+
+  .dim { color: var(--text-dim); }
+</style>
