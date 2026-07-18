@@ -6,21 +6,32 @@ interface Props {
   date: Date;
   description?: string;
   tags?: string[];
+  lang?: 'en' | 'es';
+  altLangHref?: string;
+  readingTime?: number;
 }
 
-const { title, date, description, tags = [] } = Astro.props;
+const { title, date, description, tags = [], lang = 'en', altLangHref, readingTime } = Astro.props;
 
-const formattedDate = date.toLocaleDateString('en-US', {
+const formattedDate = date.toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
 });
+
+const readingLabel = lang === 'es' ? 'min de lectura' : 'min read';
 ---
-<Shell title={`${title} · Yatan Blumenthal Vargas`} description={description}>
+<Shell title={`${title} · Yatan Blumenthal Vargas`} description={description} lang={lang} altLangHref={altLangHref}>
   <article class="essay">
     <header class="essay-header">
       <p class="essay-meta">
         {formattedDate}
+        {readingTime && (
+          <>
+            <span class="sep">·</span>
+            {readingTime} {readingLabel}
+          </>
+        )}
         {tags.length > 0 && (
           <>
             <span class="sep">·</span>
@@ -40,6 +51,11 @@ const formattedDate = date.toLocaleDateString('en-US', {
 </Shell>
 
 <style>
+  :global(body:has(.essay)) {
+    background: var(--read-bg);
+    color: var(--read-text);
+  }
+
   .essay {
     max-width: var(--read-max-width);
     margin: 0 auto;

@@ -4,30 +4,60 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  lang?: 'en' | 'es';
+  altLangHref?: string;
 }
 
-const { title, description = 'Brain health, decentralized science, and thoughtful systems.' } = Astro.props;
+const {
+  title,
+  description = 'Brain health, decentralized science, and thoughtful systems.',
+  lang = 'en',
+  altLangHref = lang === 'en' ? '/es' : '/',
+} = Astro.props;
 ---
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={`https://yatan.co${Astro.url.pathname}`} />
+    <script is:inline>
+      (function () {
+        var stored = localStorage.getItem('theme');
+        var theme = stored || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
   </head>
   <body>
     <div class="shell">
       <header class="shell-nav">
         <a class="shell-home" href="/">Yatan Blumenthal Vargas</a>
-        <nav>
-          <a href="/">Now</a>
-          <span class="sep">/</span>
-          <a href="/writing">Writing</a>
-          <span class="sep">/</span>
-          <a href="mailto:me@yatan.co">Email</a>
-        </nav>
+        <div class="shell-controls">
+          <nav>
+            <a href="/">Now</a>
+            <span class="sep">/</span>
+            <a href="/writing">Writing</a>
+          </nav>
+          <div class="lang-toggle">
+            {lang === 'en' ? (
+              <>
+                <span class="lang-current">EN</span>
+                <span class="lang-sep">·</span>
+                <a href={altLangHref}>ES</a>
+              </>
+            ) : (
+              <>
+                <a href={altLangHref}>EN</a>
+                <span class="lang-sep">·</span>
+                <span class="lang-current">ES</span>
+              </>
+            )}
+          </div>
+          <button class="theme-toggle" data-theme-toggle type="button" aria-label="Toggle color theme">☾</button>
+        </div>
       </header>
       <main>
         <slot />
@@ -36,10 +66,28 @@ const { title, description = 'Brain health, decentralized science, and thoughtfu
         <a href="https://github.com/yatanco">GitHub</a>
         <span class="sep">·</span>
         <a href="https://linkedin.com/in/yatanblumenthal">LinkedIn</a>
-        <span class="sep">·</span>
-        <a href="mailto:me@yatan.co">Email</a>
       </footer>
     </div>
+    <script>
+      const btn = document.querySelector('[data-theme-toggle]');
+      const label = (theme) => (theme === 'light' ? '☀' : '☾');
+      const describe = (theme) => (theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme');
+
+      function sync() {
+        const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+        btn.textContent = label(theme);
+        btn.setAttribute('aria-label', describe(theme));
+      }
+      sync();
+
+      btn?.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = current === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        sync();
+      });
+    </script>
   </body>
 </html>
 
@@ -69,6 +117,13 @@ const { title, description = 'Brain health, decentralized science, and thoughtfu
   }
   .shell-home:hover { color: var(--mint); text-decoration: none; }
 
+  .shell-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.9rem;
+  }
+
   nav {
     font-size: 0.9rem;
     color: var(--text-dim);
@@ -80,6 +135,30 @@ const { title, description = 'Brain health, decentralized science, and thoughtfu
     color: var(--rule);
     margin: 0 0.35rem;
   }
+
+  .lang-toggle {
+    font-size: 0.75rem;
+    letter-spacing: 0.03em;
+    color: var(--text-dim);
+  }
+  .lang-toggle a { color: var(--text-dim); }
+  .lang-toggle a:hover { color: var(--mint); }
+  .lang-current { opacity: 0.55; }
+  .lang-sep {
+    color: var(--rule);
+    margin: 0 0.3rem;
+  }
+
+  .theme-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    line-height: 1;
+    font-size: 1rem;
+    color: var(--text-dim);
+    cursor: pointer;
+  }
+  .theme-toggle:hover { color: var(--mint); }
 
   .shell-footer {
     margin-top: 4rem;

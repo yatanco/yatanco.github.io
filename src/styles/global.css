@@ -19,6 +19,36 @@
   --read-line-height: 1.75;
 }
 
+/* Light theme — system preference, before JS sets data-theme explicitly */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --bg: #faf9f6;
+    --mint: #0d7a6c;
+    --text-primary: #1c1c1a;
+    --text-dim: #6b6b64;
+    --rule: #e2e0da;
+
+    --read-bg: #f6f1e7;
+    --read-text: #2a241c;
+    --read-text-dim: #736b5c;
+    --read-accent: #a15c2e;
+  }
+}
+
+/* Light theme — explicit choice via toggle, wins over system preference */
+:root[data-theme='light'] {
+  --bg: #faf9f6;
+  --mint: #0d7a6c;
+  --text-primary: #1c1c1a;
+  --text-dim: #6b6b64;
+  --rule: #e2e0da;
+
+  --read-bg: #f6f1e7;
+  --read-text: #2a241c;
+  --read-text-dim: #736b5c;
+  --read-accent: #a15c2e;
+}
+
 * { box-sizing: border-box; }
 
 html, body {
@@ -30,6 +60,10 @@ html, body {
 
 body {
   font-family: var(--mono);
+}
+
+body, a, button, hr {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 a { color: var(--mint); text-decoration: none; }

@@ -1,23 +1,23 @@
 ---
 import { getCollection } from 'astro:content';
-import EssayLayout from '../../layouts/EssayLayout.astro';
-import { estimateReadingTime } from '../../utils/reading-time';
+import EssayLayout from '../../../layouts/EssayLayout.astro';
+import { estimateReadingTime } from '../../../utils/reading-time';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('writing', ({ id, data }) => id.startsWith('en/') && !data.draft);
-  const esSlugs = new Set(
-    (await getCollection('writing', ({ id }) => id.startsWith('es/')))
-      .map((post) => post.slug.replace(/^es\//, ''))
+  const posts = await getCollection('writing', ({ id, data }) => id.startsWith('es/') && !data.draft);
+  const enSlugs = new Set(
+    (await getCollection('writing', ({ id }) => id.startsWith('en/')))
+      .map((post) => post.slug.replace(/^en\//, ''))
   );
 
   return posts.map((post) => {
-    const slug = post.slug.replace(/^en\//, '');
+    const slug = post.slug.replace(/^es\//, '');
     return {
       params: { slug },
       props: {
         post,
         slug,
-        altLangHref: esSlugs.has(slug) ? `/es/writing/${slug}` : '/es',
+        altLangHref: enSlugs.has(slug) ? `/writing/${slug}` : '/',
       },
     };
   });
@@ -32,7 +32,7 @@ const readingTime = estimateReadingTime(post.body);
   date={post.data.date}
   description={post.data.description}
   tags={post.data.tags}
-  lang="en"
+  lang="es"
   altLangHref={altLangHref}
   readingTime={readingTime}
 >

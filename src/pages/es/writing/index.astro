@@ -1,29 +1,29 @@
 ---
-import Shell from '../../layouts/Shell.astro';
+import Shell from '../../../layouts/Shell.astro';
 import { getCollection } from 'astro:content';
-import { estimateReadingTime } from '../../utils/reading-time';
+import { estimateReadingTime } from '../../../utils/reading-time';
 
-const posts = (await getCollection('writing', ({ id, data }) => id.startsWith('en/') && !data.draft))
+const posts = (await getCollection('writing', ({ id, data }) => id.startsWith('es/') && !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
-<Shell title="Writing · Yatan Blumenthal Vargas" description="Essays and unfinished thoughts." lang="en" altLangHref="/es/writing">
+<Shell title="Escritura · Yatan Blumenthal Vargas" description="Ensayos y reflexiones sin terminar." lang="es" altLangHref="/writing">
   <section class="intro">
-    <h1>Writing</h1>
-    <p class="tagline">Essays and unfinished thoughts.</p>
+    <h1>Escritura</h1>
+    <p class="tagline">Ensayos y reflexiones sin terminar.</p>
   </section>
 
   <hr />
 
   <ul class="post-list">
     {posts.map((post) => {
-      const slug = post.slug.replace(/^en\//, '');
+      const slug = post.slug.replace(/^es\//, '');
       const minutes = estimateReadingTime(post.body);
       return (
         <li>
-          <a class="post-title" href={`/writing/${slug}`}>{post.data.title}</a>
+          <a class="post-title" href={`/es/writing/${slug}`}>{post.data.title}</a>
           <p class="post-meta">
-            {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-            <span> · {minutes} min read</span>
+            {post.data.date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
+            <span> · {minutes} min de lectura</span>
             {post.data.description && <span> — {post.data.description}</span>}
           </p>
         </li>
