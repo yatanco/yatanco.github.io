@@ -1,7 +1,7 @@
 ---
 title: "A Simple Self-Compassion Practice That Changed My Inner Dialogue"
 date: 2026-03-10
-description: "Up to around age 30, I feel like I bulldozed my way to moderate success."
+description: "Up to age 30 I treated my emotions as a distraction. One practice slowly changed how I talk to myself — and made me a better learner."
 tags: ["personal", "mindfulness"]
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: "Systems beat emotions in parenting"
 date: 2026-04-18
-description: "\"I'd rather pick up the pee and poo in the apartment than take the dogs out.\" What?"
+description: "After a year of arguments about walking the dogs, a simple system with clear consequences worked where guilt, threats and scolding hadn't."
 tags: ["parenting", "systems"]
 ---
 

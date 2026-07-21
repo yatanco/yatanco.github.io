@@ -1,7 +1,7 @@
 ---
 title: "What You Resist, Persists - Avoiding Discomfort Makes It Worse"
 date: 2026-03-18
-description: "A sentence that gives me wisdom in different situations."
+description: "A friend's quiet withdrawal during a trip in Mexico taught me something I keep relearning: the thing you're avoiding is usually exactly what needs to be said."
 tags: ["reflection", "communication"]
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: "What if your family was more like a team?"
 date: 2025-10-18
-description: "What if your family was more like a team, with roles and rituals to keep it running smoothly?"
+description: "Moving in together with two teenage stepdaughters, a baby, and my 76-year-old mother, I tried running our blended family like a facilitated team workshop."
 tags: ["family", "systems"]
 ---
 

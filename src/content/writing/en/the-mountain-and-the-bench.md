@@ -1,7 +1,7 @@
 ---
 title: "The Mountain and the Bench"
 date: 2020-10-18
-description: "It's quarantine time. After three months in an apartment on the tenth floor in a city of nine million people, you might think I would start losing it."
+description: "Three months into quarantine on the tenth floor of a Bogotá apartment, two small things became the most meaningful part of my day."
 tags: ["personal", "meditation"]
 ---
 

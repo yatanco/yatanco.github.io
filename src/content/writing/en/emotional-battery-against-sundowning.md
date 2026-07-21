@@ -1,21 +1,34 @@
 ---
 title: "Emotional Battery Against Sundowning"
 date: 2026-07-20
+description: "My mom's Alzheimer's symptoms came paired with agitation in the evening - called sundowning syndrome.  Out of many things we tried, the emotional battery analogy is what helped most."
 tags: []
 ---
 
-Getting nervous and agitated as the day winds down — known as sundowning syndrome — was one of the first symptoms we noticed when my mom started losing cognitive abilities.
+My moms Alzheimer's symptoms came paired with agitation in the evening - called sundowning syndrome.  Out of many things we tried, the emotional battery analogy is what helped most.
 
-And out of all the things I read and tried, the concept of an emotional battery — or "good experience" battery — remains one of the most useful.
+Let me take a few steps back. When people start losing cognitive abilities, be it dementia or Alzheimer's — all umbrella terms for conditions where we know the symptoms but not the cause — this generally comes in pairs. 
 
-Let me take a few steps back. When people start losing cognitive abilities, be it dementia or Alzheimer's — all umbrella terms for conditions where we know the symptoms but not the cause — this generally comes in pairs. Be it depression, or like in my mom's case, fears in the evening where she would look for a justification. Being afraid of being attacked even in her own home, which has a security guard and is on the tenth floor with a security door. Afraid that somebody might come in through the balcony. My mom gets nervous and afraid in the evening.
+For some people its depression, for many  like in my mom, it's agitation or fears in the evening,
+As is natural, when you feel afraid you start looking for a reason, she would make sure all the doors were closed, be worried about her safety, say people could climb up that tree, or come in through that window. It didnt matter if she lived on the 10th floor or had a security guard or bulletproof door. The feeling is still there and is always accompanying her in the evening. 
+This has huge effects on her social life. Any theater play, evening gathering, concert or most other social gatherings happen in the evening and increasing reluctance left her more and more isolated.
 
-So how does this come about? Everybody is afraid — it's a natural part of life. People are afraid of the dark, of going out on the street, of public speaking, of being rejected. It's the most normal thing in the world. But as we feel afraid, we are also able to quickly manage it. You just get over it and act. This mechanism fails with a person like my mom. It's broken. She now needs resources where she didn't need them before.
+So how does this come about? Everybody is afraid every day. People are afraid of the dark, of animals, of noises, of other people. But as duty calls you wouldnt let those fears cost you your job or your social interactions or ability to fulfill your duties.  You just get over the fear or learn to live with it and do what you have to do. 
 
 My mom went out in the dark a million times in her life. She would attend events, parties, meetings — even in Colombia when it was one of the most dangerous countries in the world. She is no stranger to overcoming fear. But now she can't anymore.
+This ability to overcome fear easily, this mechanism no longer works when a person has sundowning syndrome, they loose it, its broken. 
+So how do you prevent being paralized at home in fear? A new mechanism is needed, new resources are required. 
 
-So how do you create new resources for her so she can handle the fear? This is where the emotional battery idea comes in. During the day, if you have positive experiences — have fun, talk to people, do something interesting, go into the ocean, watch a theater play or live music, or whatever else fills you up — your emotional battery starts charging. And when evening comes, the fear that arrives is handled in a much easier way.
+The recommendation of doctors and psychiatrists were take some benzos, antihistaminics, distract and redirect her. So it was all about numbing that state. But one psychiatrist of my mom pointed me do a different idea.
 
-This happened with my mom. In the evening she is calm if she had an interesting day. She will be less restless, she'll sleep earlier, and just have a better time overall.
+This is where the emotional battery idea comes in. 
+Imagine you have finite resources to handle difficult experiences and emotions. When you have to handle them and are low on juice, this becomes a struggle, agitation, worries, stress. 
+If you do have the resources, its still a challenge but much lesser so, you have the resources.
 
-Something worth learning for everybody, really — but especially useful if you are caring for someone with sundowning syndrome.
+So how do you charge that battery, you do so with experiences that are net positive to you. In my mom's case this is: laughing, going to see dance or live music, being in nature seeing beautiful landscapes or animals. And of course being with friends or with people having a good time. 
+Every time we have spent some time doing this during the day, her evening is a lot more peaceful, less agitation, and more relaxation.
+She can enjoy herself more, she can be more independent rather than feeling enslaved by her fear.
+This is something worth doing with your loved ones if you are in this situation.
+
+And its also something worth thinking about in general. Want to have a quieter more recreational evening. Have an interesting stimulating day. 
+

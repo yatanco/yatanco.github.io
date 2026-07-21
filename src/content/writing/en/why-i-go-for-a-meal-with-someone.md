@@ -1,7 +1,7 @@
 ---
 title: "Why I Go for a Meal with Someone"
 date: 2026-02-26
-description: "A small guide for my 16-year-old that turned out to be useful for adults too."
+description: "A shared meal isn't really about the food. A short guide I originally wrote for my 16-year-old on what it actually means to show up at a table."
 tags: ["relationships", "reflection"]
 ---
 

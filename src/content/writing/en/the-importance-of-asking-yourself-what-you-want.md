@@ -1,7 +1,7 @@
 ---
 title: "The Importance of Asking Yourself What You Want"
 date: 2026-02-26
-description: "When I went to university, everybody thought I should study Computer Science."
+description: "I studied Social Sciences because my parents did. It took years to realize I hadn't actually asked myself what I wanted."
 tags: ["reflection", "career"]
 ---
 

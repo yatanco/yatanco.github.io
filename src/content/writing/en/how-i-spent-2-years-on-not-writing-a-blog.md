@@ -1,7 +1,7 @@
 ---
 title: "How I spent 2 years on not writing a blog"
 date: 2026-02-26
-description: "A post about all the things i did except writing."
+description: "I tried every editor, every static site generator, every hosting setup. The only thing I didn't do was write."
 tags: ["writing", "reflection"]
 ---
 

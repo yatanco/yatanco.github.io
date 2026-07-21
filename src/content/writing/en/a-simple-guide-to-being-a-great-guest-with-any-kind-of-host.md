@@ -1,7 +1,7 @@
 ---
 title: "A Simple Guide to Being a Great Guest (with Any Kind of Host)"
 date: 2022-04-01
-description: "After many years of moving and traveling a lot, I finally got a place where I could host people."
+description: "After hosting many guests I noticed my idea of being a good guest wasn't universally shared. Here's what came out of actually talking about it."
 tags: ["relationships", "travel"]
 ---
 

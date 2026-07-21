@@ -1,7 +1,7 @@
 ---
 title: "What If Caregivers Could Contribute to Alzheimer's Research?"
 date: 2026-03-14
-description: "About six years ago I started noticing that my mother was changing."
+description: "Six years caring for my mother with Alzheimer's left me with a lot of data and nowhere useful to put it. What if that could change?"
 tags: ["cerebrum", "desci", "brain health"]
 ---
 

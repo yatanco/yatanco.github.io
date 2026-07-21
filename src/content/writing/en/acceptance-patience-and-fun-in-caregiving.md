@@ -1,7 +1,7 @@
 ---
 title: "Acceptance, Patience and Fun in Caregiving"
 date: 2026-02-26
-description: "About 5 years ago I started noticing changes in my mother."
+description: "Caring for someone with cognitive decline is exhausting. These are the things that actually helped."
 tags: ["caregiving", "family"]
 ---
 
