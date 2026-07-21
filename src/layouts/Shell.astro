@@ -23,6 +23,13 @@ const {
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={`https://yatan.co${Astro.url.pathname}`} />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C4MCQHJQY0"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-C4MCQHJQY0');
+    </script>
     <script is:inline>
       (function () {
         var stored = localStorage.getItem('theme');
