@@ -1,0 +1,46 @@
+---
+import Shell from '../layouts/Shell.astro';
+---
+<Shell title="Book a time · Yatan Blumenthal Vargas" description="Book a call with Yatan." lang="en">
+  <section class="intro">
+    <h1>Book a time</h1>
+    <p class="tagline">Pick a slot that works for you.</p>
+  </section>
+
+  <div class="cal-frame">
+    <iframe
+      src="https://calendar.google.com/calendar/appointments/AcZssZ1HxWzRsWf2lZfZjZL-0fObTHKrhA-slkC84g4=?gv=true"
+      title="Book an appointment"
+      width="100%"
+      height="720"
+      loading="lazy"
+    ></iframe>
+  </div>
+
+  <p class="fallback">
+    Not loading? <a href="https://calendar.app.google/KL4kDvs8aFUKsmHY8">Open the booking page</a>.
+  </p>
+</Shell>
+
+<style>
+  .intro h1 { font-size: 1.75rem; margin: 0 0 0.5rem; }
+  .tagline { color: var(--text-dim); margin: 0 0 2rem; }
+
+  .cal-frame {
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .cal-frame iframe {
+    display: block;
+    border: 0;
+  }
+
+  .fallback {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-top: 1rem;
+  }
+</style>
