@@ -15,7 +15,7 @@ export const GET: APIRoute = async ({ site }) => {
     '## Essays & Writing',
     '',
     ...posts.map((post) => {
-      const lang = post.slug.split('/')[0];
+      const lang = post.id.split('/')[0];
       const desc = post.data.description ? `: ${post.data.description}` : '';
       return `- [${post.data.title}](${new URL(postHref(post), site)}) (${date(post.data.date)}, ${lang})${desc}`;
     }),

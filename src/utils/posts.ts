@@ -8,6 +8,6 @@ export async function getPosts(lang?: Lang) {
 }
 
 export function postHref(post: CollectionEntry<'writing'>) {
-  const [lang, slug] = post.slug.split('/');
+  const [lang, slug] = post.id.split('/');
   return lang === 'en' ? `/writing/${slug}/` : `/${lang}/writing/${slug}/`;
 }

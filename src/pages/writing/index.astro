@@ -18,7 +18,7 @@ const posts = (await getCollection('writing', ({ data }) => !data.draft))
 
   <ul class="post-list">
     {posts.map((post) => {
-      const [lang, slug] = post.slug.split('/');
+      const [lang, slug] = post.id.split('/');
       const href = lang === 'en' ? `/writing/${slug}` : `/${lang}/writing/${slug}`;
       const minutes = estimateReadingTime(post.body);
       return (

@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import EssayLayout from '../../layouts/EssayLayout.astro';
 import { estimateReadingTime } from '../../utils/reading-time';
 
@@ -7,11 +7,11 @@ export async function getStaticPaths() {
   const posts = await getCollection('writing', ({ id, data }) => id.startsWith('en/') && !data.draft);
   const esSlugs = new Set(
     (await getCollection('writing', ({ id }) => id.startsWith('es/')))
-      .map((post) => post.slug.replace(/^es\//, ''))
+      .map((post) => post.id.replace(/^es\//, ''))
   );
 
   return posts.map((post) => {
-    const slug = post.slug.replace(/^en\//, '');
+    const slug = post.id.replace(/^en\//, '');
     return {
       params: { slug },
       props: {
@@ -24,7 +24,7 @@ export async function getStaticPaths() {
 }
 
 const { post, altLangHref } = Astro.props;
-const { Content } = await post.render();
+const { Content } = await render(post);
 const readingTime = estimateReadingTime(post.body);
 ---
 <EssayLayout
