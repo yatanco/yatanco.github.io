@@ -6,6 +6,8 @@ interface Props {
   description?: string;
   lang?: 'en' | 'es';
   altLangHref?: string;
+  ogType?: 'website' | 'article';
+  publishedTime?: Date;
 }
 
 const {
@@ -13,7 +15,39 @@ const {
   description = 'Operator and builder working on brain health, practical products, and human systems. Based in Cartagena, Colombia.',
   lang = 'en',
   altLangHref = lang === 'en' ? '/es' : '/',
+  ogType = 'website',
+  publishedTime,
 } = Astro.props;
+
+const SITE = 'https://yatan.co';
+const AUTHOR = 'Yatan Blumenthal Vargas';
+const FONTS_URL = 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap';
+
+// Cloudflare Pages 308-redirects /foo to /foo/, so absolute URLs always carry the trailing slash.
+const withSlash = (path: string) => (path.endsWith('/') ? path : `${path}/`);
+const pathname = withSlash(Astro.url.pathname);
+const canonical = `${SITE}${pathname}`;
+const isHome = pathname === '/' || pathname === '/es/';
+
+// Only emit hreflang for real translation pairs; fallbacks to the other homepage aren't translations.
+const hasTranslation = isHome || altLangHref.includes('/writing/');
+const enHref = `${SITE}${lang === 'en' ? pathname : withSlash(altLangHref)}`;
+const esHref = `${SITE}${lang === 'es' ? pathname : withSlash(altLangHref)}`;
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': `${SITE}/#person`,
+  name: AUTHOR,
+  url: SITE,
+  jobTitle: 'Operator and Builder',
+  sameAs: [
+    'https://github.com/yatanco',
+    'https://linkedin.com/in/yatanblumenthal',
+    'https://x.com/yatanco',
+    'https://instagram.com/yatan.co',
+  ],
+};
 ---
 <!doctype html>
 <html lang={lang}>
@@ -22,7 +56,38 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={`https://yatan.co${Astro.url.pathname}`} />
+    <meta name="author" content={AUTHOR} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title={AUTHOR} href={lang === 'es' ? '/es/rss.xml' : '/rss.xml'} />
+    {hasTranslation && (
+      <>
+        <link rel="alternate" hreflang="en" href={enHref} />
+        <link rel="alternate" hreflang="es" href={esHref} />
+        <link rel="alternate" hreflang="x-default" href={enHref} />
+      </>
+    )}
+
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={AUTHOR} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:locale" content={lang === 'es' ? 'es_CO' : 'en_US'} />
+    {publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:creator" content="@yatanco" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href={FONTS_URL} />
+    <link rel="stylesheet" href={FONTS_URL} media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href={FONTS_URL} /></noscript>
+
+    {isHome && <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />}
+    <slot name="head" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-C4MCQHJQY0"></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
@@ -43,7 +108,7 @@ const {
       <header class="shell-nav">
         <a class="shell-home" href="/">Yatan Blumenthal Vargas</a>
         <div class="shell-controls">
-          <nav>
+          <nav aria-label="Main navigation">
             <a href="/">Now</a>
             <span class="sep">/</span>
             <a href="/writing">Writing</a>
@@ -51,15 +116,15 @@ const {
           <div class="lang-toggle">
             {lang === 'en' ? (
               <>
-                <span class="lang-current">🇺🇸</span>
+                <span class="lang-current" role="img" aria-label="English">🇺🇸</span>
                 <span class="lang-sep">·</span>
-                <a href={altLangHref}>🇨🇴</a>
+                <a href={altLangHref} hreflang="es"><span role="img" aria-label="Español">🇨🇴</span></a>
               </>
             ) : (
               <>
-                <a href={altLangHref}>🇺🇸</a>
+                <a href={altLangHref} hreflang="en"><span role="img" aria-label="English">🇺🇸</span></a>
                 <span class="lang-sep">·</span>
-                <span class="lang-current">🇨🇴</span>
+                <span class="lang-current" role="img" aria-label="Español">🇨🇴</span>
               </>
             )}
           </div>
@@ -69,7 +134,7 @@ const {
       <main>
         <slot />
       </main>
-      <footer class="shell-footer">
+      <footer class="shell-footer" aria-label="Social links">
         <a href="https://github.com/yatanco">GitHub</a>
         <span class="sep">·</span>
         <a href="https://linkedin.com/in/yatanblumenthal">LinkedIn</a>

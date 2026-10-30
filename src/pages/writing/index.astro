@@ -26,7 +26,7 @@ const posts = (await getCollection('writing', ({ data }) => !data.draft))
           <span class="post-lang" title={lang.toUpperCase()}>{flags[lang]}</span>
           <a class="post-title" href={href} lang={lang}>{post.data.title}</a>
           <p class="post-meta">
-            {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}
             <span> · {minutes} min read</span>
             {post.data.description && <span> — {post.data.description}</span>}
           </p>

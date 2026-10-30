@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /cal
+
+Sitemap: https://yatan.co/sitemap-index.xml
+# AI context: https://yatan.co/llms.txt
